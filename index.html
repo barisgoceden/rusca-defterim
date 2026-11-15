@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Rusça Defterim</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="theme-color" content="#2f5bea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Rusça">
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{--bg:#f6f7fb;--panel:#fff;--ink:#1d2433;--mute:#6b7385;--line:#e3e6ee;--acc:#2f5bea;--acc2:#e8eeff;
+--new:#fde2e1;--newi:#b42318;--learn:#fff1c2;--learni:#8a5a00;--known:#dcf5e3;--knowni:#1a7f37}
+@media (prefers-color-scheme:dark){:root{--bg:#12151c;--panel:#1b202a;--ink:#e6e9f0;--mute:#9aa3b5;--line:#2b3240;--acc:#7c9bff;--acc2:#232c45;
+--new:#4a2222;--newi:#ffb4ab;--learn:#4a3b12;--learni:#ffd77a;--known:#173b24;--knowni:#7ee2a0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:12px;padding:10px 16px;flex-wrap:wrap}
+.top h1{font-size:18px;margin:0}
+.pills{display:flex;gap:6px;flex-wrap:wrap;font-size:13px;color:var(--mute)}
+.pill{background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:2px 10px}
+nav{display:flex;gap:4px;overflow-x:auto;padding:0 12px}
+nav button{border:0;background:none;color:var(--mute);padding:10px 12px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;font-size:15px}
+nav button.on{color:var(--acc);border-color:var(--acc);font-weight:600}
+main{max-width:920px;margin:0 auto;padding:16px}
+section{display:none}section.on{display:block}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+button,select,input,textarea{font:inherit;color:inherit}
+button{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+button.primary{background:var(--acc);color:#fff;border-color:var(--acc)}
+button.sm{padding:3px 8px;font-size:13px}
+textarea,input[type=text],input[type=email],input[type=number],select{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px;width:100%}
+select{width:auto}
+label.blk{display:block;font-size:13px;color:var(--mute);margin:8px 0 4px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.seg button.on{background:var(--acc2);border-color:var(--acc);color:var(--acc);font-weight:600}
+.hint{font-size:13px;color:var(--mute)}
+.w{cursor:pointer;border-radius:4px;padding:0 1px}
+.w.new{background:var(--new);color:var(--newi)}
+.w.learn{background:var(--learn);color:var(--learni)}
+.w.known{color:inherit;border-bottom:1px dotted var(--knowni)}
+.sent{border-top:1px solid var(--line);padding:10px 0}
+.sent:first-child{border-top:0}
+.sent .ru{font-size:20px;line-height:1.7}
+.sent .tr{color:var(--mute)}
+.sent .orig{font-size:13px;color:var(--mute);font-style:italic}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.item .ru{font-size:18px}
+.item .tr{color:var(--mute)}
+.item .note{font-size:13px;color:var(--mute);white-space:pre-wrap}
+.legend{display:flex;gap:10px;font-size:13px;flex-wrap:wrap}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px 20px;text-align:center;min-height:260px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.card .front{font-size:26px}
+.card .back{font-size:20px;border-top:1px dashed var(--line);padding-top:12px}
+.card .note{font-size:14px;color:var(--mute);white-space:pre-wrap}
+.badge{font-size:12px;color:var(--mute)}
+.rate{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.rate button{padding:10px 4px}
+.rate small{display:block;color:var(--mute);font-size:11px}
+.big{font-size:40px;padding:10px 24px}
+video,#imgPrev{max-width:100%;border-radius:8px;margin-top:8px}
+#cues{max-height:280px;overflow:auto;margin-top:8px}
+.cue{display:flex;gap:6px;align-items:center;padding:4px;border-radius:6px}
+.cue.cur{background:var(--acc2)}
+.cue .t{font-size:12px;color:var(--mute);min-width:48px}
+.cue .x{flex:1}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);width:min(520px,94vw);padding:18px}
+dialog::backdrop{background:#0006}
+dialog h3{margin:0 0 6px}
+dialog menu{display:flex;gap:8px;justify-content:flex-end;padding:0;margin:14px 0 0}
+#wWord{font-size:30px;font-weight:600}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#222;color:#fff;padding:8px 14px;border-radius:8px;font-size:14px;opacity:0;transition:.3s;pointer-events:none;z-index:50}
+#toast.on{opacity:1}
+.warn{background:var(--learn);color:var(--learni);padding:8px 10px;border-radius:8px;font-size:14px}
+.sub{border:1px dashed var(--line);border-radius:10px;padding:10px;margin-top:10px}
+.vwrap{position:relative;display:inline-block;max-width:100%;width:100%}
+.vwrap video{width:100%;margin:0;background:#000;display:block}
+.vmask{position:absolute;left:0;right:0;bottom:0;height:32%;background:#000;display:none;color:#888;font-size:12px;align-items:center;justify-content:center;pointer-events:none}
+.vwrap.hide .vmask{display:flex}
+.game{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gcol{display:flex;flex-direction:column;gap:8px}
+.tile{text-align:left;padding:10px 12px;border-radius:10px;min-height:46px;transition:.15s}
+.tile.sel{border-color:var(--acc);background:var(--acc2);box-shadow:0 0 0 2px var(--acc)}
+.tile.ok{background:var(--known);color:var(--knowni);border-color:transparent;opacity:.6;cursor:default}
+.tile.bad{background:var(--new);color:var(--newi);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.gstat{display:flex;gap:12px;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+@media (max-width:600px){main{padding:10px}.game{gap:6px}.tile{padding:8px;font-size:14px}.sent .ru{font-size:18px}.card .front{font-size:22px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>🇷🇺 Rusça Defterim</h1>
+    <div class="pills" id="pills"></div>
+  </div>
+  <nav id="nav">
+    <button data-tab="add" class="on">➕ Ekle</button>
+    <button data-tab="cards">🃏 Kartlar</button>
+    <button data-tab="match">🎯 Eşleştir</button>
+    <button data-tab="word">🔤 Kelimeler</button>
+    <button data-tab="sentence">💬 Cümleler</button>
+    <button data-tab="pattern">🧩 Kalıplar</button>
+    <button data-tab="clip">🎬 Klipler</button>
+    <button data-tab="known">✅ Bildiklerim</button>
+    <button data-tab="settings">⚙️ Ayarlar</button>
+  </nav>
+</header>
+
+<main>
+<!-- EKLE -->
+<section id="tab-add" class="on">
+  <div class="panel">
+    <div class="seg" id="srcSeg">
+      <button data-src="text" class="on">✍️ Metin</button>
+      <button data-src="img">🖼️ Fotoğraf / Ekran görüntüsü</button>
+      <button data-src="vid">🎬 Video / Altyazı</button>
+    </div>
+    <div id="src-text" class="src">
+      <p class="hint">Duolingo, Instagram vb. yerlerden kopyaladığın metni aşağıya yapıştır. Rusça olmasa da olur — Rusçaya çevrilir ve dinletilir.</p>
+    </div>
+    <div id="src-img" class="src" hidden>
+      <input type="file" id="imgIn" accept="image/*" multiple>
+      <p class="hint">Ekran görüntüsünü buraya <b>Ctrl+V</b> ile yapıştırabilirsin. Resimdeki yazı (Rusça/Türkçe/İngilizce) okunup aşağıdaki kutuya eklenir.</p>
+      <img id="imgPrev" hidden alt="">
+    </div>
+    <div id="src-vid" class="src" hidden>
+      <div class="row">
+        <label class="hint">Video: <input type="file" id="vidIn" accept="video/*"></label>
+        <label class="hint">Altyazı (.srt/.vtt): <input type="file" id="subIn" accept=".srt,.vtt,.txt"></label>
+      </div>
+      <video id="vid" controls playsinline hidden></video>
+      <div class="row" style="margin-top:8px">
+        <button data-act="grab">📸 Bu karedeki yazıyı oku</button>
+        <label class="hint"><input type="checkbox" id="cropBottom" checked> Sadece alt kısmı oku (altyazı alanı)</label>
+      </div>
+      <p class="hint">Videoya gömülü altyazı varsa: videoyu altyazının göründüğü yerde durdur, "Bu karedeki yazıyı oku"ya bas. Ayrı altyazı dosyan varsa yükle; satırlar video ile senkron listelenir.</p>
+      <div id="clipBox" class="sub" hidden>
+        <b>🎬 Klip oluştur</b> <span class="hint">— videonun bir parçasını eşleştirme oyunu için kaydet</span>
+        <div class="row" style="margin-top:6px">
+          <span class="hint">Başlangıç</span><input type="number" id="clA" step="0.1" min="0" style="width:90px" class="num"><button class="sm" data-act="clA">⏱ Şimdi</button>
+          <span class="hint">Bitiş</span><input type="number" id="clZ" step="0.1" min="0" style="width:90px" class="num"><button class="sm" data-act="clZ">⏱ Şimdi</button>
+          <button class="sm" data-act="clTry">▶ Dene</button>
+        </div>
+        <label class="blk">Videoda söylenen (Rusça)</label>
+        <input type="text" id="clRu" placeholder="ör. Как тебя зовут?">
+        <label class="blk">Türkçe anlamı (boş bırakırsan otomatik çevrilir)</label>
+        <input type="text" id="clTr">
+        <div class="row" style="margin-top:8px"><button class="primary" data-act="clSave">🎬 Klibi kaydet</button><span class="hint">Altyazı listesindeki 🎬 düğmesi satırı tek tıkla klip yapar.</span></div>
+      </div>
+      <div id="cues"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <label class="blk" for="raw">Metin (düzenleyebilirsin)</label>
+    <textarea id="raw" rows="6" placeholder="Например: Я люблю читать книги.  — veya —  Kitap okumayı seviyorum."></textarea>
+    <div class="row" style="margin-top:8px">
+      <span class="hint">Rusça değilse girdi dili:</span>
+      <select id="inLang"><option value="tr">Türkçe</option><option value="en">İngilizce</option><option value="de">Almanca</option><option value="fr">Fransızca</option></select>
+      <label class="hint"><input type="checkbox" id="joinLines"> Satırları birleştir (altyazı/OCR)</label>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="primary" data-act="analyze">Çözümle →</button>
+      <button data-act="sayAll">🔊 Hepsini dinle</button>
+      <button data-act="clearRaw">Temizle</button>
+      <span id="ocrStatus" class="hint"></span>
+    </div>
+  </div>
+
+  <div id="anaWrap" class="panel" hidden>
+    <div class="row" style="justify-content:space-between">
+      <div class="legend"><span class="w new">yeni</span><span class="w learn">öğreniyorum</span><span class="w known">biliyorum</span><span class="hint">· Kelimeye tıkla</span></div>
+      <span id="anaStat" class="hint"></span>
+    </div>
+    <div class="acts" style="margin:10px 0">
+      <button class="sm" data-act="allNewLearn">📘 Tüm yeni kelimeleri öğrenmeye ekle</button>
+      <button class="sm" data-act="allNewKnown">✅ Kalan yeni kelimeleri biliyorum</button>
+      <button class="sm" data-act="allSent">💬 Tüm cümleleri kaydet</button>
+    </div>
+    <div id="analysis"></div>
+  </div>
+</section>
+
+<!-- KARTLAR -->
+<section id="tab-cards">
+  <div class="panel row">
+    <select id="cType"><option value="all">Hepsi</option><option value="word">Kelimeler</option><option value="sentence">Cümleler</option><option value="pattern">Kalıplar</option></select>
+    <select id="cDir"><option value="ru-tr">Rusça → Türkçe</option><option value="tr-ru">Türkçe → Rusça</option><option value="audio">🔊 Dinle → Anlam</option><option value="mix">Karışık</option></select>
+    <label class="hint"><input type="checkbox" id="cDue"> Sadece vakti gelenler</label>
+    <label class="hint"><input type="checkbox" id="cAuto"> Otomatik seslendir</label>
+    <button data-act="restartCards">↻ Başla</button>
+  </div>
+  <div id="cardBox"></div>
+  <p class="hint">Kısayollar: <b>Boşluk</b> çevir · <b>1–4</b> puanla · <b>S</b> dinle</p>
+</section>
+
+<!-- EŞLEŞTİR -->
+<section id="tab-match">
+  <div class="panel">
+    <div class="seg" id="mSrc">
+      <button data-v="word" class="on">🔤 Kelimeler</button>
+      <button data-v="sentence">💬 Cümleler</button>
+      <button data-v="pattern">🧩 Kalıplar</button>
+      <button data-v="clip">🎬 Videolar</button>
+    </div>
+    <div class="row">
+      <span class="hint">Sol:</span>
+      <select id="mLeft"><option value="audio">🔊 Sadece ses</option><option value="ru">Rusça yazı</option><option value="video">🎬 Video</option></select>
+      <span class="hint">Sağ:</span>
+      <select id="mRight"><option value="tr">Türkçe anlam</option><option value="ru">Rusça yazı</option></select>
+      <select id="mN"><option value="5">5 çift</option><option value="10">10 çift</option><option value="15">15 çift</option></select>
+      <label class="hint" id="mHideL"><input type="checkbox" id="mHide"> Altyazıyı gizle</label>
+      <label class="hint" id="mKnownL"><input type="checkbox" id="mKnown"> Bildiklerim dahil</label>
+      <button class="primary" data-act="mStart">▶ Yeni tur</button>
+    </div>
+  </div>
+  <div id="gameBox"></div>
+</section>
+
+<!-- LİSTELER -->
+<section id="tab-list">
+  <div class="panel row">
+    <h2 id="listTitle" style="margin:0;font-size:18px;flex:1"></h2>
+    <input type="text" id="listQ" placeholder="Ara…" style="max-width:220px">
+    <button class="primary" data-act="newItem">+ Yeni</button>
+  </div>
+  <p class="hint" id="listHint"></p>
+  <div id="listBox"></div>
+</section>
+
+<!-- AYARLAR -->
+<section id="tab-settings">
+  <div class="panel">
+    <h3 style="margin-top:0">🔊 Ses</h3>
+    <div id="voiceWarn"></div>
+    <label class="blk">Ses kaynağı</label>
+    <select id="sMode"><option value="auto">Otomatik (bilgisayardaki Rusça ses, yoksa çevrimiçi)</option><option value="browser">Sadece bilgisayardaki ses</option><option value="online">Her zaman çevrimiçi ses</option></select>
+    <label class="blk">Rusça ses</label>
+    <select id="sVoice"></select>
+    <label class="blk">Konuşma hızı: <span id="sRateV"></span></label>
+    <input type="range" id="sRate" min="0.5" max="1.3" step="0.05" style="width:100%">
+    <div class="row" style="margin-top:8px"><button data-act="testVoice">▶ Dene: «Привет! Как дела?»</button></div>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0">🌐 Çeviri</h3>
+    <p class="hint">Çeviriler ücretsiz MyMemory servisiyle yapılır (anahtarsız günlük ~5.000 karakter). Buraya e-posta yazarsan sınır ~50.000 karaktere çıkar. Çeviriler önbelleğe alınır, aynı metin tekrar sorgulanmaz.</p>
+    <input type="email" id="sMail" placeholder="isteğe bağlı e-posta">
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0">💾 Yedek</h3>
+    <p class="hint">Veriler bu tarayıcıda saklanır. Başka cihaza taşımak veya yedeklemek için dışa aktar.</p>
+    <div class="row">
+      <button data-act="export">⬇ Dışa aktar (JSON)</button>
+      <label><button data-act="importClick">⬆ İçe aktar</button><input type="file" id="impIn" accept=".json" hidden></label>
+      <button data-act="wipe">🗑 Her şeyi sil</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- Düzenleme penceresi -->
+<dialog id="dlg">
+  <form method="dialog">
+    <h3 id="dlgTitle">Düzenle</h3>
+    <label class="blk">Tür</label>
+    <select id="fType"><option value="word">Kelime</option><option value="sentence">Cümle</option><option value="pattern">Kalıp</option><option value="clip" disabled>Video klip</option></select>
+    <label class="blk">Rusça</label>
+    <div class="row" style="flex-wrap:nowrap"><textarea id="fRu" rows="2"></textarea><button type="button" data-act="fSay">🔊</button></div>
+    <div class="row" style="margin-top:6px">
+      <button type="button" class="sm" data-act="fRu2Tr">↓ Rusçadan Türkçeye çevir</button>
+      <button type="button" class="sm" data-act="fTr2Ru">↑ Türkçeden Rusçaya çevir</button>
+    </div>
+    <label class="blk">Türkçe anlamı</label>
+    <textarea id="fTr" rows="2"></textarea>
+    <label class="blk">Not / örnek cümle / ipucu</label>
+    <textarea id="fNote" rows="3"></textarea>
+    <p class="hint">Rusça kısmı boş bırakırsan Türkçeden otomatik çevrilir.</p>
+    <menu><button value="cancel">Vazgeç</button><button value="ok" class="primary">Kaydet</button></menu>
+  </form>
+</dialog>
+
+<!-- Kelime penceresi -->
+<dialog id="wdlg">
+  <div class="row" style="justify-content:space-between">
+    <span id="wWord"></span>
+    <div class="row"><button data-act="wSay">🔊</button><button data-act="wSlow">🐢</button></div>
+  </div>
+  <div id="wTr" style="font-size:18px;margin:6px 0"></div>
+  <div id="wState" class="hint"></div>
+  <div id="wCtx" class="hint" style="margin-top:6px"></div>
+  <div class="acts" style="margin-top:12px">
+    <button data-act="wLearn">📘 Öğreniyorum</button>
+    <button data-act="wKnown">✅ Biliyorum</button>
+    <button data-act="wEdit">✏️ Düzenle</button>
+    <button data-act="wRemove">🗑 Listeden çıkar</button>
+    <a id="wDict" target="_blank" rel="noopener"><button>📖 Sözlük</button></a>
+  </div>
+  <menu><button data-act="wClose">Kapat</button></menu>
+</dialog>
+
+<!-- Video oynatıcı -->
+<dialog id="vdlg">
+  <div class="vwrap" id="pWrap"><video id="pVid" playsinline controls></video><div class="vmask">altyazı gizli</div></div>
+  <div id="pText" style="margin-top:8px"></div>
+  <menu>
+    <label class="hint"><input type="checkbox" id="pHide"> Altyazıyı gizle</label>
+    <button data-act="pReplay">↻ Tekrar</button><button data-act="pClose">Kapat</button>
+  </menu>
+</dialog>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const norm=w=>String(w).toLowerCase().replace(/́/g,'').replace(/ё/g,'е').trim();
+const WRE=/[Ѐ-ӿ́]+(?:-[Ѐ-ӿ́]+)*/g;
+const TYPE_TR={word:'Kelime',sentence:'Cümle',pattern:'Kalıp',clip:'Video klip'};
+const LISTS=['word','sentence','pattern','clip','known'];
+
+/* ---------- Video deposu (IndexedDB) ---------- */
+const IDBP=new Promise((ok,no)=>{const r=indexedDB.open('rusca-video',1);r.onupgradeneeded=()=>r.result.createObjectStore('v');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error);});
+async function idb(mode,fn){const db=await IDBP;return new Promise((ok,no)=>{const t=db.transaction('v',mode),s=t.objectStore('v'),r=fn(s);t.oncomplete=()=>ok(r&&r.result);t.onerror=()=>no(t.error);});}
+const idbPut=(k,v)=>idb('readwrite',s=>s.put(v,k));
+const idbGet=k=>idb('readonly',s=>s.get(k));
+const idbDel=k=>idb('readwrite',s=>s.delete(k));
+const idbClear=()=>idb('readwrite',s=>s.clear());
+const VURL={};
+async function videoURL(id){if(VURL[id])return VURL[id];const b=await idbGet(id);if(!b)return null;return VURL[id]=URL.createObjectURL(b);}
+async function playClip(clip,v){
+  const url=await videoURL(clip.videoId);if(!url){toast('Bu klibin videosu bulunamadı');return;}
+  if(v.dataset.vid!==clip.videoId){v.src=url;v.dataset.vid=clip.videoId;await new Promise(r=>v.addEventListener('loadedmetadata',r,{once:true}));}
+  v.currentTime=clip.a;v._end=clip.z;v.play().catch(()=>{});
+}
+function bindClipStop(v){v.addEventListener('timeupdate',()=>{if(v._end&&v.currentTime>=v._end){v.pause();v._end=null;}});}
+
+/* ---------- Veri ---------- */
+const KEY='rusca-defterim-v1';
+const DEF={items:[],trCache:{},settings:{rate:0.9,voice:'',mode:'auto',mail:'',dir:'ru-tr',autoSpeak:true,cardType:'all',dueOnly:true,inLang:'tr'}};
+let DB=load(), IDX={};
+function load(){
+  try{const d=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(d&&Array.isArray(d.items))return{...DEF,...d,trCache:d.trCache||{},settings:{...DEF.settings,...d.settings}};}catch(e){}
+  return JSON.parse(JSON.stringify(DEF));
+}
+function save(){
+  const ks=Object.keys(DB.trCache); if(ks.length>3000)ks.slice(0,ks.length-3000).forEach(k=>delete DB.trCache[k]);
+  try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){toast('Kaydedilemedi (depolama dolu olabilir)')}
+  reindex(); updatePills();
+}
+function reindex(){IDX={};for(const it of DB.items)if(it.type==='word')IDX[norm(it.ru)]=it;}
+function isRu(t){const c=(t.match(/[Ѐ-ӿ]/g)||[]).length,l=(t.match(/[A-Za-zÇĞİÖŞÜçğıöşü]/g)||[]).length;return c>0&&c>=l;}
+function chunk(t,n){const out=[];let cur='';for(const w of t.split(/\s+/)){if((cur+' '+w).trim().length>n&&cur){out.push(cur);cur=w}else cur=(cur+' '+w).trim()}if(cur)out.push(cur);return out;}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600);}
+
+/* ---------- Çeviri ---------- */
+async function translate(text,from,to){
+  text=String(text||'').replace(/́/g,'').trim(); if(!text)return'';
+  const ck=from+'|'+to+'|'+text; if(DB.trCache[ck])return DB.trCache[ck];
+  const res=[];
+  for(const p of chunk(text,450)){
+    let u='https://api.mymemory.translated.net/get?q='+encodeURIComponent(p)+'&langpair='+from+'%7C'+to;
+    if(DB.settings.mail)u+='&de='+encodeURIComponent(DB.settings.mail);
+    const r=await fetch(u); const j=await r.json();
+    const out=j?.responseData?.translatedText||'';
+    if(String(j.responseStatus)!=='200'||/MYMEMORY WARNING|QUERY LENGTH LIMIT/i.test(out))throw new Error(j.responseDetails||out||'Çeviri hatası');
+    const ta=document.createElement('textarea');ta.innerHTML=out;res.push(ta.value);
+  }
+  const out=res.join(' '); DB.trCache[ck]=out; save(); return out;
+}
+
+/* ---------- Ses ---------- */
+let ruVoices=[], audioQ=null;
+function loadVoices(){ruVoices=speechSynthesis.getVoices().filter(v=>/^ru/i.test(v.lang));fillVoices();}
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
+function stopSpeak(){try{speechSynthesis.cancel()}catch(e){} if(audioQ){audioQ.stop=true;audioQ.a&&audioQ.a.pause();audioQ=null;}}
+function speak(text,rate){
+  text=String(text||'').replace(/́/g,'').trim(); if(!text)return;
+  stopSpeak(); rate=rate||+DB.settings.rate;
+  const m=DB.settings.mode, online=m==='online'||(m==='auto'&&!ruVoices.length);
+  if(!online){
+    const u=new SpeechSynthesisUtterance(text);u.lang='ru-RU';u.rate=rate;
+    u.voice=ruVoices.find(v=>v.name===DB.settings.voice)||ruVoices[0]||null;
+    if(!u.voice)toast('Bilgisayarda Rusça ses bulunamadı (Ayarlar’a bak)');
+    speechSynthesis.speak(u);return;
+  }
+  const parts=chunk(text,180),q={stop:false};audioQ=q;let i=0;
+  const next=()=>{if(q.stop||i>=parts.length)return;
+    const a=new Audio('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ru&q='+encodeURIComponent(parts[i++]));
+    q.a=a;a.playbackRate=rate;a.preservesPitch=true;a.onended=next;
+    a.play().catch(()=>toast('Çevrimiçi ses çalınamadı. Ayarlar’dan bilgisayar sesini dene.'));};
+  next();
+}
+
+/* ---------- Kelime işaretleme ---------- */
+function wcls(w){const it=IDX[norm(w)];return it?(it.status==='known'?'known':'learn'):'new';}
+function rich(t){
+  t=String(t||'');let h='',last=0;
+  for(const m of t.matchAll(WRE)){h+=esc(t.slice(last,m.index));h+=`<span class="w ${wcls(m[0])}" data-w="${esc(m[0])}">${esc(m[0])}</span>`;last=m.index+m[0].length;}
+  return h+esc(t.slice(last));
+}
+function refreshSpans(){$$('.w[data-w]').forEach(s=>{s.className='w '+wcls(s.dataset.w)});anaStat();}
+
+/* ---------- Öğe işlemleri ---------- */
+function findDup(type,ru){const k=norm(ru);return DB.items.find(i=>i.type===type&&norm(i.ru)===k);}
+async function upsert(f,existing){
+  if(!f.ru&&f.tr){try{f.ru=await translate(f.tr,'tr','ru')}catch(e){toast('Çeviri yapılamadı: '+e.message);return null}}
+  if(!f.ru)return null;
+  if(f.type==='word')f.ru=f.ru.toLowerCase();
+  let it=existing||findDup(f.type,f.ru);
+  if(it){Object.assign(it,f);}
+  else{it={id:uid(),type:f.type,ru:f.ru,tr:f.tr||'',note:f.note||'',status:f.status||'learning',created:Date.now(),srs:null};DB.items.push(it);}
+  save();fillMissing();return it;
+}
+function setWord(w,status,tr,ctx){
+  const k=norm(w);let it=IDX[k];
+  if(it){it.status=status;if(tr&&!it.tr)it.tr=tr;}
+  else{it={id:uid(),type:'word',ru:w.toLowerCase(),tr:tr||'',note:ctx?('Örnek: '+ctx):'',status,created:Date.now(),srs:null};DB.items.push(it);}
+  return it;
+}
+let filling=false;
+async function fillMissing(){
+  if(filling)return;filling=true;
+  try{for(const it of DB.items){
+    if(it.type==='word'&&it.status==='known')continue;
+    try{
+      if(it.ru&&!it.tr){it.tr=await translate(it.ru,'ru','tr');save();refreshView();await sleep(250);}
+    }catch(e){break}
+  }}finally{filling=false}
+}
+
+/* ---------- Sekmeler ---------- */
+let TAB='add';
+function show(tab){
+  TAB=tab;$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  $$('main>section').forEach(s=>s.classList.remove('on'));
+  const id=LISTS.includes(tab)?'tab-list':'tab-'+tab;
+  $('#'+id).classList.add('on');
+  if(id==='tab-list'){$('#listQ').value='';renderList();}
+  if(tab==='cards')startCards();
+  if(tab==='match')matchUI();
+  $$('video').forEach(v=>v.pause());
+  if(tab==='settings')renderSettings();
+  stopSpeak();
+}
+$('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.tab)});
+$('#srcSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  $$('#srcSeg button').forEach(x=>x.classList.toggle('on',x===b));
+  $$('.src').forEach(s=>s.hidden=s.id!=='src-'+b.dataset.src);});
+function refreshView(){if(LISTS.includes(TAB))renderList();}
+
+function updatePills(){
+  const L=DB.items.filter(i=>i.type==='word'&&i.status==='learning').length;
+  const K=DB.items.filter(i=>i.type==='word'&&i.status==='known').length;
+  const now=Date.now(),D=DB.items.filter(i=>i.type!=='clip'&&i.status!=='known'&&(!i.srs||i.srs.due<=now)).length;
+  $('#pills').innerHTML=`<span class="pill">📘 ${L} öğreniliyor</span><span class="pill">✅ ${K} biliniyor</span><span class="pill">🃏 ${D} tekrar</span>`;
+}
+
+/* ---------- Çözümleme ---------- */
+let CUR=[];
+function splitSentences(raw){
+  const out=[];
+  for(const line of raw.split(/\n+/)){
+    const l=line.replace(/\s+/g,' ').trim();if(!l)continue;
+    const m=l.match(/[^.!?…]+(?:[.!?…]+["»”)]*|$)/g)||[l];
+    for(const s of m){const t=s.trim();if(t&&/[\p{L}]/u.test(t))out.push(t);}
+  }
+  return out;
+}
+async function analyze(){
+  let raw=$('#raw').value;if(!raw.trim())return toast('Önce metin gir');
+  if($('#joinLines').checked)raw=raw.replace(/\s*\n\s*/g,' ');
+  CUR=splitSentences(raw).map(s=>({orig:s,ru:isRu(s)?s:null,tr:isRu(s)?null:s,err:''}));
+  $('#anaWrap').hidden=false;renderAna();
+  const from=$('#inLang').value;
+  for(const o of CUR){
+    try{
+      if(o.ru===null)o.ru=await translate(o.orig,from,'ru');
+      else if(o.tr===null)o.tr=await translate(o.ru,'ru','tr');
+    }catch(e){o.err=e.message;if(o.ru===null)o.ru='';if(o.tr===null)o.tr='';}
+    renderAna();
+  }
+}
+function renderAna(){
+  $('#analysis').innerHTML=CUR.map((o,i)=>`<div class="sent" data-ctx="${esc(o.ru||'')}">
+    <div class="ru">${o.ru===null?'<span class="hint">Rusçaya çevriliyor…</span>':rich(o.ru)}</div>
+    <div class="tr">${o.tr===null?'<span class="hint">çevriliyor…</span>':esc(o.tr)}</div>
+    ${o.ru&&o.orig!==o.ru?`<div class="orig">Girdi: ${esc(o.orig)}</div>`:''}
+    ${o.err?`<div class="warn">${esc(o.err)}</div>`:''}
+    <div class="acts">
+      <button class="sm" data-act="sSay" data-i="${i}">🔊</button>
+      <button class="sm" data-act="sSlow" data-i="${i}">🐢 Yavaş</button>
+      <button class="sm" data-act="sSave" data-i="${i}">💬 Cümle olarak kaydet</button>
+      <button class="sm" data-act="sPat" data-i="${i}" title="Önce cümlede bir parça seç">🧩 Kalıp kaydet</button>
+      <button class="sm" data-act="sNew" data-i="${i}">📘 Yeni kelimeleri ekle</button>
+    </div></div>`).join('');
+  anaStat();
+}
+function curWords(){const s=new Map();for(const o of CUR)for(const m of (o.ru||'').matchAll(WRE))s.set(norm(m[0]),{w:m[0],ctx:o.ru});return s;}
+function anaStat(){
+  if(!CUR.length)return;const ws=curWords();let k=0,l=0;
+  ws.forEach((v,key)=>{const it=IDX[key];if(it?.status==='known')k++;else if(it)l++;});
+  const n=ws.size;$('#anaStat').textContent=n?`${n} farklı kelime · %${Math.round(k/n*100)} biliniyor · ${l} öğreniliyor · ${n-k-l} yeni`:'';
+}
+
+/* ---------- Görsel / OCR ---------- */
+let TW=null;
+function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>no(new Error('Betik yüklenemedi'));document.head.append(s);});}
+function setOcr(t){$('#ocrStatus').textContent=t;}
+async function ocr(src){
+  setOcr('OCR hazırlanıyor (ilk seferde dil dosyaları indirilir)…');
+  if(!window.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');
+  if(!TW)TW=await Tesseract.createWorker(['rus','tur','eng'],1,{logger:m=>{
+    if(m.status==='recognizing text')setOcr('Okunuyor… %'+Math.round(m.progress*100));
+    else setOcr('Hazırlanıyor: '+m.status+(m.progress?' %'+Math.round(m.progress*100):''));}});
+  const {data}=await TW.recognize(src);setOcr('');
+  return data.text.split('\n').map(l=>l.trim()).filter(l=>/[\p{L}]{2,}/u.test(l)).join('\n');
+}
+function appendRaw(t){t=(t||'').trim();if(!t)return toast('Yazı bulunamadı');const r=$('#raw');r.value=(r.value.trim()?r.value.trim()+'\n':'')+t;toast('Metin kutusuna eklendi — kontrol edip "Çözümle"ye bas');}
+async function ocrFiles(files){
+  for(const f of files){if(!f.type.startsWith('image/'))continue;
+    const p=$('#imgPrev');p.src=URL.createObjectURL(f);p.hidden=false;
+    try{appendRaw(await ocr(f));}catch(e){setOcr('');toast('OCR hatası: '+e.message);}}
+}
+$('#imgIn').addEventListener('change',e=>ocrFiles([...e.target.files]));
+document.addEventListener('paste',e=>{
+  const imgs=[...(e.clipboardData?.files||[])].filter(f=>f.type.startsWith('image/'));
+  if(imgs.length){e.preventDefault();show('add');$('#srcSeg [data-src=img]').click();ocrFiles(imgs);}
+});
+
+/* ---------- Video / Altyazı ---------- */
+let CUES=[],CURVID=null;
+$('#vidIn').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const v=$('#vid');v.src=URL.createObjectURL(f);v.hidden=false;
+  CURVID={id:'v_'+f.name+'_'+f.size,name:f.name,file:f,stored:false};$('#clipBox').hidden=false;if(CUES.length)renderCues();});
+async function saveClip(a,z,ru,tr){
+  if(!CURVID)return toast('Önce video yükle');
+  ru=(ru||'').trim();tr=(tr||'').trim();
+  if(!(z>a))return toast('Bitiş, başlangıçtan sonra olmalı');
+  if(!ru&&!tr)return toast('Videoda söyleneni (Rusça) veya anlamını yaz');
+  if(!CURVID.stored){try{await idbPut(CURVID.id,CURVID.file);CURVID.stored=true;}catch(e){return toast('Video kaydedilemedi: '+e.message);}}
+  if(!ru){try{ru=await translate(tr,'tr','ru')}catch(e){}}
+  DB.items.push({id:uid(),type:'clip',videoId:CURVID.id,video:CURVID.name,a:+a.toFixed(2),z:+z.toFixed(2),ru,tr,note:'',status:'learning',created:Date.now(),srs:null});
+  save();fillMissing();toast('🎬 Klip kaydedildi');
+}
+$('#subIn').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;const t=await f.text();
+  CUES=parseSubs(t);
+  if(!CUES.length){appendRaw(t);return;}
+  renderCues();
+});
+function tsec(s){const p=s.replace(',','.').split(':').map(Number);return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+(p[1]||0);}
+function parseSubs(t){
+  const cues=[];
+  for(const b of t.replace(/\r/g,'').split(/\n\s*\n/)){
+    const ls=b.split('\n'),i=ls.findIndex(l=>l.includes('-->'));if(i<0)continue;
+    const [a,z]=ls[i].split('-->').map(s=>tsec(s.trim().split(/\s+/)[0]));
+    const text=ls.slice(i+1).join(' ').replace(/<[^>]+>/g,'').replace(/\{[^}]+\}/g,'').trim();
+    if(text)cues.push({a,z,text});
+  }
+  return cues;
+}
+const fmt=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+function renderCues(){
+  $('#cues').innerHTML=`<div class="row" style="margin-bottom:6px"><b>${CUES.length} altyazı satırı</b><button class="sm" data-act="cuesAll">Tümünü metne aktar</button></div>`+
+  CUES.map((c,i)=>`<div class="cue" data-ci="${i}"><span class="t">${fmt(c.a)}</span><span class="x">${esc(c.text)}</span>
+   <button class="sm" data-act="cueGo" data-i="${i}">▶</button><button class="sm" data-act="cueSay" data-i="${i}">🔊</button><button class="sm" data-act="cueAdd" data-i="${i}" title="Metne ekle">➕</button>${CURVID?`<button class="sm" data-act="cueClip" data-i="${i}" title="Klip olarak kaydet">🎬</button>`:''}</div>`).join('');
+}
+$('#vid').addEventListener('timeupdate',e=>{
+  const t=e.target.currentTime;
+  $$('.cue').forEach(el=>{const c=CUES[el.dataset.ci];const on=c&&t>=c.a&&t<=c.z;
+    if(on&&!el.classList.contains('cur'))el.scrollIntoView({block:'nearest'});el.classList.toggle('cur',on);});
+});
+async function grab(){
+  const v=$('#vid');if(!v.videoWidth)return toast('Önce video yükle');
+  v.pause();const c=document.createElement('canvas'),crop=$('#cropBottom').checked;
+  const sy=crop?Math.floor(v.videoHeight*0.55):0,h=v.videoHeight-sy,sc=v.videoWidth<1200?2:1;
+  c.width=v.videoWidth*sc;c.height=h*sc;
+  c.getContext('2d').drawImage(v,0,sy,v.videoWidth,h,0,0,c.width,c.height);
+  const t=v.currentTime;
+  try{const txt=await ocr(c);appendRaw(txt);$('#joinLines').checked=true;
+    if(txt.trim()){$('#clRu').value=txt.replace(/\s*\n\s*/g,' ').trim();$('#clTr').value='';
+      $('#clA').value=Math.max(0,t-2.5).toFixed(1);$('#clZ').value=Math.min(v.duration||t+1.5,t+1.5).toFixed(1);}
+  }catch(e){setOcr('');toast('OCR hatası: '+e.message);}
+}
+
+/* ---------- Listeler ---------- */
+const LIST_INFO={
+  word:['🔤 Öğrendiğim kelimeler','Çözümleme ekranında kelimelere tıklayarak ya da “+ Yeni” ile ekle. Bu listedekiler kartlara girer.'],
+  sentence:['💬 Cümleler','Kaydettiğin tam cümleler. Kartlarda çalışılır.'],
+  pattern:['🧩 Kalıplar','Tekrar kullanılabilir yapılar, örn. «Мне нравится …» (… hoşuma gidiyor), «У меня есть …» (benim … var).'],
+  known:['✅ Bildiğim kelimeler','Bu kelimeler metinlerde “biliniyor” olarak görünür ve kartlara girmez.'],
+  clip:['🎬 Video klipler','“Ekle → Video / Altyazı” bölümünde video yükleyip klip kaydet. Klipler 🎯 Eşleştir’de kullanılır. Videolar bu tarayıcıda saklanır (JSON yedeğine dahil değildir).']
+};
+function renderList(){
+  const kind=TAB,[title,hint]=LIST_INFO[kind];$('#listTitle').textContent=title;$('#listHint').textContent=hint;
+  const q=norm($('#listQ').value);
+  let items=kind==='known'?DB.items.filter(i=>i.type==='word'&&i.status==='known')
+    :DB.items.filter(i=>i.type===kind&&(kind==='clip'||i.status!=='known'));
+  $('[data-act=newItem]').hidden=kind==='clip';
+  if(q)items=items.filter(i=>norm(i.ru+' '+i.tr+' '+i.note).includes(q));
+  items.sort((a,b)=>b.created-a.created);
+  const total=items.length;items=items.slice(0,400);
+  const now=Date.now();
+  $('#listBox').innerHTML=(total?`<p class="hint">${total} kayıt${total>400?' (ilk 400 gösteriliyor)':''}</p>`:'<p class="hint">Henüz kayıt yok.</p>')+
+  items.map(it=>{const due=it.srs?(it.srs.due<=now?'tekrar vakti':'sonraki tekrar: '+new Date(it.srs.due).toLocaleDateString('tr-TR')):'yeni kart';
+   return `<div class="item" data-ctx="${esc(it.type==='word'?'':it.ru)}">
+    <div class="ru">${rich(it.ru)}</div><div class="tr">${esc(it.tr)||'<span class="hint">çeviri bekleniyor…</span>'}</div>
+    ${it.note?`<div class="note">${esc(it.note)}</div>`:''}
+    ${it.type==='clip'?`<div class="hint">🎬 ${esc(it.video||'')} · ${fmt(it.a)}–${fmt(it.z)}</div>`:''}
+    <div class="acts">${it.type==='clip'?`<button class="sm" data-act="iPlay" data-id="${it.id}">▶ İzle</button>`:''}<button class="sm" data-act="iSay" data-id="${it.id}">🔊</button><button class="sm" data-act="iSlow" data-id="${it.id}">🐢</button>
+    <button class="sm" data-act="iEdit" data-id="${it.id}">✏️</button>
+    ${it.type==='clip'?'':it.status==='known'?`<button class="sm" data-act="iLearn" data-id="${it.id}">↺ Öğrenmeye al</button>`:`<button class="sm" data-act="iKnown" data-id="${it.id}">✅ ${it.type==='word'?'Biliyorum':'Öğrendim'}</button>`}
+    <button class="sm" data-act="iDel" data-id="${it.id}">🗑</button>
+    ${it.status!=='known'&&it.type!=='clip'?`<span class="hint">· ${due}</span>`:''}</div></div>`}).join('');
+}
+$('#listQ').addEventListener('input',renderList);
+
+/* ---------- Düzenleme penceresi ---------- */
+function openEdit(it,title){
+  return new Promise(res=>{const d=$('#dlg');$('#dlgTitle').textContent=title||'Düzenle';
+    $('#fType').value=it.type||'word';$('#fType').disabled=it.type==='clip';$('#fRu').value=it.ru||'';$('#fTr').value=it.tr||'';$('#fNote').value=it.note||'';
+    d.returnValue='';d.onclose=()=>res(d.returnValue==='ok'?{type:$('#fType').value,ru:$('#fRu').value.trim(),tr:$('#fTr').value.trim(),note:$('#fNote').value.trim()}:null);
+    d.showModal();});
+}
+async function editItem(it){const f=await openEdit(it,TYPE_TR[it.type]+' düzenle');if(f){await upsert(f,it);refreshView();refreshSpans();if(TAB==='cards')renderCard();}}
+
+/* ---------- Kelime penceresi ---------- */
+let WC=null;
+function openWord(w,ctx){
+  WC={w,ctx,tr:''};const it=IDX[norm(w)];
+  $('#wWord').textContent=w;$('#wTr').textContent=it?.tr||'çevriliyor…';
+  $('#wState').textContent=it?(it.status==='known'?'✅ Biliyorsun':'📘 Öğreniyorsun'):'🆕 Yeni kelime';
+  $('#wCtx').textContent=ctx&&ctx!==w?'Cümle: '+ctx:'';
+  $('#wDict').href='https://en.wiktionary.org/wiki/'+encodeURIComponent(w.toLowerCase())+'#Russian';
+  $('[data-act=wRemove]').hidden=!it;
+  $('#wdlg').showModal();
+  if(DB.settings.autoSpeak)speak(w);
+  if(!it?.tr)translate(w,'ru','tr').then(t=>{if(WC?.w===w){WC.tr=t;$('#wTr').textContent=t;}}).catch(e=>$('#wTr').textContent='(çeviri alınamadı)');
+}
+
+/* ---------- Kartlar ---------- */
+const FC={q:[],flip:false,dir:null};
+function buildQueue(){
+  const s=DB.settings,now=Date.now();
+  let q=DB.items.filter(i=>i.type!=='clip'&&i.status!=='known'&&i.ru&&(s.cardType==='all'||i.type===s.cardType)&&(!s.dueOnly||!i.srs||i.srs.due<=now));
+  q.sort((a,b)=>(a.srs?.due||0)-(b.srs?.due||0)||Math.random()-.5);FC.q=q;
+}
+function startCards(){
+  const s=DB.settings;$('#cType').value=s.cardType;$('#cDir').value=s.dir;$('#cDue').checked=s.dueOnly;$('#cAuto').checked=s.autoSpeak;
+  buildQueue();FC.flip=false;FC.dir=null;renderCard();
+}
+function nextSrs(it,g){
+  const s=it.srs?{...it.srs}:{int:0,ease:2.5,reps:0,due:0},D=864e5;
+  if(g===0){s.reps=0;s.int=0;s.ease=Math.max(1.3,s.ease-.2);s.due=Date.now()+60e3;}
+  else{s.reps++;
+    if(s.reps===1)s.int=g===1?1:g===2?1:4;
+    else if(s.reps===2)s.int=g===1?2:g===2?3:7;
+    else s.int=Math.max(s.int+1,Math.round(s.int*(g===1?1.2:g===2?s.ease:s.ease*1.3)));
+    s.ease=Math.max(1.3,s.ease+(g===1?-.15:g===3?.15:0));s.due=Date.now()+s.int*D;}
+  return s;
+}
+const ivl=s=>s.int?s.int+' gün':'1 dk';
+function renderCard(){
+  const box=$('#cardBox'),it=FC.q[0];
+  if(!it){const all=DB.items.filter(i=>i.status!=='known').length;
+    box.innerHTML=`<div class="card"><div style="font-size:40px">🎉</div><div>${all?'Şimdilik tekrar edilecek kart yok.':'Henüz kart yok. “Ekle” sekmesinden kelime, cümle veya kalıp ekle.'}</div>
+    ${all?'<div><button data-act="studyAll">Yine de hepsini çalış</button></div>':''}</div>`;return;}
+  if(!FC.dir)FC.dir=DB.settings.dir==='mix'?['ru-tr','tr-ru','audio'][Math.floor(Math.random()*3)]:DB.settings.dir;
+  const d=FC.dir,ruH=`<div data-ctx="${esc(it.type==='word'?'':it.ru)}">${rich(it.ru)}</div>`,trH=esc(it.tr||'(çeviri yok)');
+  const front=d==='ru-tr'?ruH:d==='tr-ru'?trH:`<div><button class="big" data-act="cSay">🔊</button></div><div class="hint">Dinle ve anlamını düşün</div>`;
+  const back=d==='ru-tr'?trH:d==='tr-ru'?ruH:ruH+`<div class="hint" style="font-size:18px">${trH}</div>`;
+  const pv=[0,1,2,3].map(g=>ivl(nextSrs(it,g)));
+  box.innerHTML=`<div class="card">
+    <div class="badge">${TYPE_TR[it.type]} · kalan ${FC.q.length}</div>
+    <div class="front">${front}</div>
+    ${FC.flip?`<div class="back">${back}</div>${it.note?`<div class="note">${esc(it.note)}</div>`:''}`:''}
+    <div class="row" style="justify-content:center">
+      <button data-act="cSay">🔊 Dinle</button><button data-act="cSlow">🐢</button>
+      ${FC.flip?'':'<button class="primary" data-act="cFlip">Cevabı göster</button>'}
+      <button data-act="cEdit">✏️</button><button data-act="cKnown">✅ Artık biliyorum</button>
+    </div></div>
+    ${FC.flip?`<div class="rate">
+      <button data-act="cRate" data-g="0">😵 Tekrar<small>${pv[0]}</small></button>
+      <button data-act="cRate" data-g="1">😓 Zor<small>${pv[1]}</small></button>
+      <button data-act="cRate" data-g="2">🙂 İyi<small>${pv[2]}</small></button>
+      <button data-act="cRate" data-g="3">😎 Kolay<small>${pv[3]}</small></button></div>`:''}`;
+  if(DB.settings.autoSpeak&&((!FC.flip&&d!=='tr-ru')||(FC.flip&&d==='tr-ru')))speak(it.ru);
+}
+function rate(g){const it=FC.q.shift();if(!it)return;it.srs=nextSrs(it,g);save();if(g===0)FC.q.push(it);FC.flip=false;FC.dir=null;renderCard();}
+document.addEventListener('keydown',e=>{
+  if(TAB!=='cards'||document.querySelector('dialog[open]')||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+  if(e.code==='Space'){e.preventDefault();if(!FC.flip&&FC.q[0]){FC.flip=true;renderCard();}}
+  else if(FC.flip&&/^[1-4]$/.test(e.key))rate(+e.key-1);
+  else if(e.key==='s'||e.key==='S'){FC.q[0]&&speak(FC.q[0].ru);}
+});
+for(const [id,k,ev] of [['cType','cardType','value'],['cDir','dir','value'],['cDue','dueOnly','checked'],['cAuto','autoSpeak','checked']])
+  $('#'+id).addEventListener('change',e=>{DB.settings[k]=e.target[ev];save();startCards();});
+
+/* ---------- Ayarlar ---------- */
+function fillVoices(){
+  const s=$('#sVoice');if(!s)return;
+  s.innerHTML=ruVoices.length?ruVoices.map(v=>`<option ${v.name===DB.settings.voice?'selected':''}>${esc(v.name)}</option>`).join(''):'<option>(Rusça ses yok)</option>';
+  $('#voiceWarn').innerHTML=ruVoices.length?'':`<p class="warn">Bu tarayıcıda/bilgisayarda Rusça ses bulunamadı, bu yüzden <b>çevrimiçi ses</b> kullanılıyor. Çevrimdışı ses için: <b>Windows Ayarlar → Saat ve dil → Konuşma → Ses ekle → Русский</b>. Ya da uygulamayı <b>Microsoft Edge</b>'de aç (doğal Rusça sesler hazır gelir).</p>`;
+}
+function renderSettings(){const s=DB.settings;$('#sMode').value=s.mode;$('#sRate').value=s.rate;$('#sRateV').textContent=s.rate+'x';$('#sMail').value=s.mail;fillVoices();}
+$('#sMode').addEventListener('change',e=>{DB.settings.mode=e.target.value;save();});
+$('#sVoice').addEventListener('change',e=>{DB.settings.voice=e.target.value;save();});
+$('#sRate').addEventListener('input',e=>{DB.settings.rate=+e.target.value;$('#sRateV').textContent=e.target.value+'x';save();});
+$('#sMail').addEventListener('change',e=>{DB.settings.mail=e.target.value.trim();save();});
+$('#inLang').value=DB.settings.inLang;$('#inLang').addEventListener('change',e=>{DB.settings.inLang=e.target.value;save();});
+$('#impIn').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{const d=JSON.parse(await f.text());if(!Array.isArray(d.items))throw new Error('Geçersiz dosya');
+    const byId=new Map(DB.items.map(i=>[i.id,i]));let n=0;
+    for(const it of d.items){if(byId.has(it.id))Object.assign(byId.get(it.id),it);else{DB.items.push(it);n++;}}
+    Object.assign(DB.trCache,d.trCache||{});save();toast(n+' yeni kayıt içe aktarıldı');}
+  catch(err){toast('İçe aktarılamadı: '+err.message)}
+  e.target.value='';
+});
+
+/* ---------- Eşleştirme oyunu ---------- */
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const GM={src:'word',pairs:[],L:[],R:[],selL:null,selR:null,done:new Set(),miss:0,wrong:new Set(),t0:0,builtFor:null};
+function mset(){return{src:GM.src,left:$('#mLeft').value,right:$('#mRight').value,n:+$('#mN').value,hide:$('#mHide').checked,known:$('#mKnown').checked};}
+function mInit(){const m=DB.settings.m;if(!m)return;GM.src=m.src||'word';$('#mLeft').value=m.left||'audio';$('#mRight').value=m.right||'tr';$('#mN').value=m.n||10;$('#mHide').checked=!!m.hide;$('#mKnown').checked=!!m.known;}
+function mFix(){
+  const s=GM.src,L=$('#mLeft'),R=$('#mRight');
+  $$('#mSrc button').forEach(b=>b.classList.toggle('on',b.dataset.v===s));
+  $('#mLeft option[value=video]').disabled=s!=='clip';$('#mLeft option[value=audio]').disabled=s==='clip';
+  if(s==='clip'&&L.value==='audio')L.value='video';
+  if(s!=='clip'&&L.value==='video')L.value='audio';
+  if(L.value==='ru'&&R.value==='ru')R.value='tr';
+  $('#mHideL').hidden=L.value!=='video';$('#mKnownL').hidden=s!=='word';
+  DB.settings.m=mset();save();
+}
+function matchUI(){mFix();if(!GM.pairs.length||GM.builtFor!==GM.src)startMatch();}
+function startMatch(){
+  mFix();const m=mset(),now=Date.now();GM.builtFor=m.src;
+  const pool=shuffle(DB.items.filter(i=>i.type===m.src&&i.ru&&i.tr&&(m.src==='clip'||m.known||i.status!=='known')));
+  pool.sort((a,b)=>((a.srs?.due||0)<=now?0:1)-((b.srs?.due||0)<=now?0:1));
+  const sl=new Set(),sr=new Set(),pairs=[];
+  for(const it of pool){const l=norm(it.ru),r=norm(m.right==='tr'?it.tr:it.ru);if(sl.has(l)||sr.has(r))continue;sl.add(l);sr.add(r);pairs.push(it);if(pairs.length>=m.n)break;}
+  const box=$('#gameBox');
+  if(pairs.length<2){GM.pairs=[];
+    box.innerHTML=`<div class="card"><div style="font-size:36px">🗂️</div><div>Bu bölümde oynamak için en az 2 kayıt gerekli.</div><div class="hint">${m.src==='clip'?'“Ekle → Video / Altyazı” bölümünden video yükleyip klip kaydet.':'“Ekle” sekmesinden içerik ekle'+(m.src==='word'?' (ya da “Bildiklerim dahil”i işaretle).':'.')}</div></div>`;return;}
+  const idx=pairs.map((_,i)=>i);
+  Object.assign(GM,{pairs,L:shuffle(idx),R:shuffle(idx),selL:null,selR:null,done:new Set(),miss:0,wrong:new Set(),t0:Date.now()});
+  const video=m.left==='video';
+  const lab=k=>{const it=pairs[k];return m.left==='audio'?`🔊 Ses ${GM.L.indexOf(k)+1}`:video?`🎬 Klip ${GM.L.indexOf(k)+1}`:esc(it.ru);};
+  box.innerHTML=`<div class="panel">
+    <div class="gstat"><span id="gStat"></span><span class="hint">${video?'Soldan bir klip seç ve izle, sağdan ne söylendiğini bul.':m.left==='audio'?'Soldan bir sese tıkla ve dinle, sağdan doğru karşılığını seç.':'Soldan birini seç, sağdan karşılığını bul.'}</span></div>
+    <div class="game">
+      <div class="gcol">${video?`<div class="vwrap ${m.hide?'hide':''}" id="gWrap"><video id="gVid" playsinline></video><div class="vmask">altyazı gizli</div></div>
+        <div class="row"><button class="sm" data-act="gReplay">↻ Tekrar izle</button><button class="sm" data-act="gSlowV">🐢 Yavaş</button></div>`:''}
+        ${GM.L.map(k=>`<button class="tile" data-act="gL" data-k="${k}">${lab(k)}</button>`).join('')}</div>
+      <div class="gcol">${GM.R.map(k=>`<button class="tile" data-act="gR" data-k="${k}">${esc(m.right==='tr'?pairs[k].tr:pairs[k].ru)}</button>`).join('')}</div>
+    </div><div id="gResult"></div></div>`;
+  if(video)bindClipStop($('#gVid'));
+  updGame();
+}
+function updGame(){
+  $$('#gameBox .tile').forEach(t=>{const k=+t.dataset.k,side=t.dataset.act==='gL'?GM.selL:GM.selR;
+    t.classList.toggle('ok',GM.done.has(k));t.classList.toggle('sel',side===k&&!GM.done.has(k));});
+  $('#gStat').innerHTML=`<b>✔ ${GM.done.size}/${GM.pairs.length}</b> · ✖ ${GM.miss} hata`;
+}
+function gPlay(k,rate){const it=GM.pairs[k],m=mset();
+  if(m.left==='video'){const v=$('#gVid');v.playbackRate=rate||1;playClip(it,v);}else speak(it.ru,rate);}
+function gCheck(){
+  if(GM.selL===null||GM.selR===null)return;
+  if(GM.selL===GM.selR){GM.done.add(GM.selL);GM.selL=GM.selR=null;}
+  else{GM.miss++;GM.wrong.add(GM.pairs[GM.selL].id);
+    const bad=$$(`#gameBox .tile[data-act=gR][data-k="${GM.selR}"],#gameBox .tile[data-act=gL][data-k="${GM.selL}"]`);
+    bad.forEach(b=>{b.classList.add('bad');setTimeout(()=>b.classList.remove('bad'),500);});GM.selR=null;}
+  updGame();
+  if(GM.done.size===GM.pairs.length)gFinish();
+}
+function gFinish(){
+  const sec=Math.round((Date.now()-GM.t0)/1000),wrong=GM.pairs.filter(i=>GM.wrong.has(i.id));
+  for(const it of wrong)if(it.type!=='clip'&&it.srs)it.srs.due=Date.now();
+  save();
+  $('#gResult').innerHTML=`<div class="sub" style="text-align:center">
+    <div style="font-size:30px">${GM.miss?'👏':'🏆'}</div><b>Bitti! ${sec} saniye · ${GM.miss} hata</b>
+    ${wrong.length?`<p class="hint">Zorlandıkların (kartlarda tekrar sorulacak):</p>`+wrong.map(it=>`<div class="item" style="text-align:left"><div class="ru">${rich(it.ru)}</div><div class="tr">${esc(it.tr)}</div>
+      <div class="acts">${it.type==='clip'?`<button class="sm" data-act="iPlay" data-id="${it.id}">▶ İzle</button>`:''}<button class="sm" data-act="iSay" data-id="${it.id}">🔊</button></div></div>`).join(''):''}
+    <div style="margin-top:10px"><button class="primary" data-act="mStart">▶ Yeni tur</button></div></div>`;
+}
+$('#mSrc').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;GM.src=b.dataset.v;startMatch();});
+['mLeft','mRight','mN','mKnown'].forEach(id=>$('#'+id).addEventListener('change',startMatch));
+$('#mHide').addEventListener('change',e=>{$('#gWrap')?.classList.toggle('hide',e.target.checked);DB.settings.m=mset();save();});
+
+/* ---------- Video oynatıcı penceresi ---------- */
+let PCLIP=null;
+bindClipStop($('#pVid'));
+$('#pHide').addEventListener('change',e=>$('#pWrap').classList.toggle('hide',e.target.checked));
+$('#vdlg').addEventListener('close',()=>$('#pVid').pause());
+
+/* ---------- Tıklama eylemleri ---------- */
+let LASTSEL={t:'',at:0};
+document.addEventListener('selectionchange',()=>{const t=String(getSelection()).trim();if(t)LASTSEL={t,at:Date.now()};});
+const byId=id=>DB.items.find(i=>i.id===id);
+const ACT={
+  analyze,grab,
+  sayAll(){const ru=CUR.map(o=>o.ru).filter(Boolean).join(' ');const raw=$('#raw').value;
+    if(ru)speak(ru);else if(isRu(raw))speak(raw);else toast('Önce “Çözümle”ye bas, Rusçası çıkınca dinletirim');},
+  clearRaw(){$('#raw').value='';CUR=[];$('#anaWrap').hidden=true;},
+  sSay:b=>speak(CUR[b.dataset.i].ru),
+  sSlow:b=>speak(CUR[b.dataset.i].ru,0.6),
+  async sSave(b){const o=CUR[b.dataset.i];if(!o.ru)return;await upsert({type:'sentence',ru:o.ru,tr:o.tr||'',note:o.orig!==o.ru?'Girdi: '+o.orig:''});toast('Cümle kaydedildi');},
+  async sPat(b){const o=CUR[b.dataset.i];let t=Date.now()-LASTSEL.at<15000?LASTSEL.t:'';
+    if(!t||!(o.ru||'').includes(t))t=o.ru;
+    let tr='';try{tr=t===o.ru?(o.tr||''):await translate(t,'ru','tr')}catch(e){}
+    const f=await openEdit({type:'pattern',ru:t,tr,note:t!==o.ru?'Örnek: '+o.ru:''},'Kalıp kaydet');
+    if(f){await upsert(f);toast('Kalıp kaydedildi');}},
+  sNew(b){const o=CUR[b.dataset.i];let n=0;for(const m of (o.ru||'').matchAll(WRE))if(!IDX[norm(m[0])]){setWord(m[0],'learning','',o.ru);reindex();n++;}
+    save();refreshSpans();fillMissing();toast(n+' kelime öğrenme listesine eklendi');},
+  allNewLearn(){let n=0;curWords().forEach((v,k)=>{if(!IDX[k]){setWord(v.w,'learning','',v.ctx);reindex();n++;}});save();refreshSpans();fillMissing();toast(n+' kelime öğrenme listesine eklendi');},
+  allNewKnown(){let n=0;curWords().forEach((v,k)=>{if(!IDX[k]){setWord(v.w,'known');reindex();n++;}});save();refreshSpans();toast(n+' kelime bildiklerine eklendi');},
+  async allSent(){let n=0;for(const o of CUR)if(o.ru&&!findDup('sentence',o.ru)){DB.items.push({id:uid(),type:'sentence',ru:o.ru,tr:o.tr||'',note:'',status:'learning',created:Date.now(),srs:null});n++;}save();fillMissing();toast(n+' cümle kaydedildi');},
+  // altyazı
+  cueGo:b=>{const v=$('#vid');if(v.src){v.currentTime=CUES[b.dataset.i].a;v.play();}},
+  cueSay:b=>speak(CUES[b.dataset.i].text),
+  cueAdd:b=>{appendRaw(CUES[b.dataset.i].text);},
+  cuesAll(){appendRaw(CUES.map(c=>c.text).join('\n'));$('#joinLines').checked=true;},
+  cueClip(b){const c=CUES[b.dataset.i];saveClip(c.a,c.z,c.text,'');},
+  clA(){$('#clA').value=$('#vid').currentTime.toFixed(1);},
+  clZ(){$('#clZ').value=$('#vid').currentTime.toFixed(1);},
+  clTry(){const v=$('#vid'),a=+$('#clA').value,z=+$('#clZ').value;if(!(z>a))return toast('Önce başlangıç ve bitişi ayarla');v.currentTime=a;v._end=z;v.play();},
+  async clSave(){await saveClip(+$('#clA').value,+$('#clZ').value,$('#clRu').value,$('#clTr').value);$('#clRu').value='';$('#clTr').value='';},
+  // eşleştirme
+  mStart:startMatch,
+  gL(b){const k=+b.dataset.k;if(GM.done.has(k))return;GM.selL=k;updGame();gPlay(k);gCheck();},
+  gR(b){const k=+b.dataset.k;if(GM.done.has(k))return;GM.selR=k;updGame();gCheck();},
+  gReplay(){if(GM.selL!==null)gPlay(GM.selL);else toast('Önce soldan bir klip seç');},
+  gSlowV(){if(GM.selL!==null)gPlay(GM.selL,0.7);else toast('Önce soldan bir klip seç');},
+  // oynatıcı
+  iPlay(b){const it=byId(b.dataset.id);PCLIP=it;$('#pText').innerHTML=`<div style="font-size:18px">${rich(it.ru)}</div><div class="hint">${esc(it.tr)}</div>`;
+    $('#vdlg').showModal();playClip(it,$('#pVid'));},
+  pReplay:()=>PCLIP&&playClip(PCLIP,$('#pVid')),
+  pClose:()=>$('#vdlg').close(),
+  // kelime penceresi
+  wSay:()=>speak(WC.w),wSlow:()=>speak(WC.w,0.6),
+  wLearn(){setWord(WC.w,'learning',WC.tr,WC.ctx);save();refreshSpans();refreshView();fillMissing();$('#wdlg').close();toast('Öğrenme listesine eklendi');},
+  wKnown(){setWord(WC.w,'known',WC.tr);save();refreshSpans();refreshView();$('#wdlg').close();},
+  wRemove(){const it=IDX[norm(WC.w)];if(it){DB.items=DB.items.filter(i=>i!==it);save();refreshSpans();refreshView();}$('#wdlg').close();},
+  async wEdit(){const it=setWord(WC.w,IDX[norm(WC.w)]?.status||'learning',WC.tr,WC.ctx);save();$('#wdlg').close();await editItem(it);},
+  wClose:()=>$('#wdlg').close(),
+  // liste
+  async newItem(){const type=TAB==='known'?'word':TAB;const f=await openEdit({type},'Yeni '+TYPE_TR[type]);
+    if(f){if(TAB==='known')f.status='known';await upsert(f);refreshView();}},
+  iSay:b=>speak(byId(b.dataset.id).ru),iSlow:b=>speak(byId(b.dataset.id).ru,0.6),
+  iEdit:b=>editItem(byId(b.dataset.id)),
+  iKnown(b){byId(b.dataset.id).status='known';save();renderList();},
+  iLearn(b){byId(b.dataset.id).status='learning';save();renderList();fillMissing();},
+  iDel(b){const it=byId(b.dataset.id);if(confirm('Silinsin mi?\n'+it.ru)){DB.items=DB.items.filter(i=>i!==it);save();renderList();
+    if(it.type==='clip'&&!DB.items.some(i=>i.videoId===it.videoId)){idbDel(it.videoId).catch(()=>{});if(VURL[it.videoId]){URL.revokeObjectURL(VURL[it.videoId]);delete VURL[it.videoId];}if(CURVID?.id===it.videoId)CURVID.stored=false;}}},
+  // düzenleme
+  fSay:()=>speak($('#fRu').value),
+  async fRu2Tr(){const v=$('#fRu').value.trim();if(v)try{$('#fTr').value=await translate(v,'ru','tr')}catch(e){toast(e.message)}},
+  async fTr2Ru(){const v=$('#fTr').value.trim();if(v)try{$('#fRu').value=await translate(v,'tr','ru')}catch(e){toast(e.message)}},
+  // kartlar
+  cSay:()=>FC.q[0]&&speak(FC.q[0].ru),cSlow:()=>FC.q[0]&&speak(FC.q[0].ru,0.6),
+  cFlip(){FC.flip=true;renderCard();},
+  cRate:b=>rate(+b.dataset.g),
+  cEdit:()=>FC.q[0]&&editItem(FC.q[0]),
+  cKnown(){const it=FC.q.shift();if(it){it.status='known';save();FC.flip=false;FC.dir=null;renderCard();toast('Bildiklerine taşındı');}},
+  restartCards:startCards,
+  studyAll(){DB.settings.dueOnly=false;save();startCards();},
+  // ayarlar
+  testVoice:()=>speak('Привет! Как дела?'),
+  export(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,1)],{type:'application/json'}));
+    a.download='rusca-defterim-yedek-'+new Date().toISOString().slice(0,10)+'.json';a.click();},
+  importClick:()=>$('#impIn').click(),
+  wipe(){if(confirm('Tüm kelimeler, cümleler, kalıplar ve ilerleme silinecek. Emin misin?')){DB=JSON.parse(JSON.stringify(DEF));save();idbClear().catch(()=>{});if(CURVID)CURVID.stored=false;toast('Silindi');}},
+};
+document.addEventListener('click',e=>{
+  const w=e.target.closest('.w[data-w]');
+  if(w){const sel=String(getSelection());if(sel.length>w.dataset.w.length)return;
+    openWord(w.dataset.w,w.closest('[data-ctx]')?.dataset.ctx||'');return;}
+  const b=e.target.closest('[data-act]');if(b&&ACT[b.dataset.act]){e.preventDefault();ACT[b.dataset.act](b,e);}
+});
+
+if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+bindClipStop($('#vid'));mInit();
+reindex();updatePills();fillMissing();
+</script>
+</body>
+</html>
