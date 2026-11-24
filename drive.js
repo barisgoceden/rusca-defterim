@@ -4,7 +4,7 @@
    - Veriler: Drive'da "Rusça Defterim/rusca-data.json"
    - Klip videoları: "Rusça Defterim/Videolar" (Drive'daki kendi klasörlerinden açılan videolar tekrar yüklenmez)
    - Kaynak klasörler: kullanıcının seçtiği Drive klasörleri (ör. Learning Russing/Photo) toplu içe aktarılır. */
-const GOOGLE_CLIENT_ID = ''; // Google Cloud'dan alınan "OAuth istemci kimliği" buraya yazılabilir (gizli bilgi değildir)
+const GOOGLE_CLIENT_ID = '1043102652065-8js13bh3v36842v0vnunlkrimjkt8s96.apps.googleusercontent.com'; // OAuth istemci kimliği (gizli bilgi değildir)
 
 const Drive = (() => {
   const SCOPE = 'https://www.googleapis.com/auth/drive';
