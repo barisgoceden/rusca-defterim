@@ -644,7 +644,7 @@ async function ocr(src){
 }
 /* OCR temizliği: uygulama arayüzü yazılarını ve anlamsız satırları at, karışmış harfleri düzelt */
 const UI_JUNK=/duolingo|\bsaved\b|following|original audio|see translation|made with edits|\.\.\. ?more|\bfollow\b|reels/i;
-const CYR2LAT={'А':'A','В':'B','Е':'E','К':'K','М':'M','Н':'H','О':'O','Р':'P','С':'C','Т':'T','Х':'X','а':'a','е':'e','о':'o','р':'p','с':'c','у':'y','х':'x','и':'u','к':'k','і':'i'};
+const CYR2LAT={'А':'A','В':'B','Е':'E','К':'K','М':'M','Н':'H','О':'O','Р':'P','С':'C','Т':'T','Х':'X','а':'a','е':'e','о':'o','р':'p','с':'c','у':'y','х':'x','и':'u','к':'k','і':'i','п':'n','г':'r','т':'t','м':'m','н':'h','ь':'b','в':'b','П':'N','Г':'r'};
 const LAT2CYR={'A':'А','B':'В','E':'Е','K':'К','M':'М','H':'Н','O':'О','P':'Р','C':'С','T':'Т','X':'Х','a':'а','e':'е','o':'о','p':'р','c':'с','y':'у','x':'х'};
 function fixScript(l){
   const cyr=(l.match(/[Ѐ-ӿ]/g)||[]).length,lat=(l.match(/[A-Za-zÇĞİÖŞÜçğıöşü]/g)||[]).length;
@@ -1078,7 +1078,7 @@ function renderDb(){
     <td class="ru" data-ctx="${esc(i.type==='word'?'':i.ru)}">${rich(i.ru)}</td>
     <td class="pr">${esc(pron(i.ru))}</td>
     <td>${esc(i.tr)||'<span class="hint">çevriliyor…</span>'}</td>
-    <td class="snd"><button class="sm" data-act="dbSay" data-id="${i.id}">🔊</button> <button class="sm" data-act="dbSlow" data-id="${i.id}">🐢</button>${i.type==='clip'?` <button class="sm" data-act="iPlay" data-id="${i.id}">▶</button>`:''}</td>
+    <td class="snd"><button class="sm" data-act="dbSay" data-id="${i.id}">🔊</button> <button class="sm" data-act="dbSlow" data-id="${i.id}">🐢</button> <button class="sm" data-act="iEdit" data-id="${i.id}" title="Düzenle">✏️</button> <button class="sm" data-act="iDel" data-id="${i.id}" title="Sil">🗑</button>${i.type==='clip'?` <button class="sm" data-act="iPlay" data-id="${i.id}">▶</button>`:''}</td>
     <td class="src">${i.folder?`📁 ${esc(i.folder)}<br>`:''}${i.srcId?`<a href="https://drive.google.com/file/d/${encodeURIComponent(i.srcId)}/view" target="_blank" rel="noopener">${esc(i.src)}</a>`:esc(i.src||i.video||TYPE_TR[i.type])}</td></tr>`).join('')
     :'<tr><td colspan="5" class="hint" style="padding:20px">Kayıt yok. Ekle → ☁️ Google Drive bölümünden klasörünü aktar ya da metin/görsel ekle.</td></tr>';
 }
@@ -1142,7 +1142,7 @@ const ACT={
   iEdit:b=>editItem(byId(b.dataset.id)),
   iKnown(b){byId(b.dataset.id).status='known';save();renderList();},
   iLearn(b){byId(b.dataset.id).status='learning';save();renderList();fillMissing();},
-  iDel(b){const it=byId(b.dataset.id);if(confirm('Silinsin mi?\n'+it.ru)){DB.items=DB.items.filter(i=>i!==it);save();renderList();
+  iDel(b){const it=byId(b.dataset.id);if(confirm('Silinsin mi?\n'+it.ru)){DB.items=DB.items.filter(i=>i!==it);save();refreshView();
     if(it.type==='clip'&&!DB.items.some(i=>i.videoId===it.videoId)){idbDel(it.videoId).catch(()=>{});
       if(it.driveOwned&&it.driveId&&window.Drive&&Drive.connected())Drive.trash(it.driveId).catch(()=>{});if(VURL[it.videoId]){URL.revokeObjectURL(VURL[it.videoId]);delete VURL[it.videoId];}if(CURVID?.id===it.videoId)CURVID.stored=false;}}},
   // düzenleme

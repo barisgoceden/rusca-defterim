@@ -1,5 +1,5 @@
 // Basit çevrimdışı önbellek: önce ağdan dener (güncel sürüm gelsin), olmazsa önbellekten açar.
-const CACHE = 'rusca-v3';
+const CACHE = 'rusca-v4';
 const SHELL = ['./', './index.html', './drive.js', './manifest.webmanifest', './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
