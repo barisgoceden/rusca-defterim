@@ -50,6 +50,7 @@ label.blk{display:block;font-size:13px;color:var(--mute);margin:8px 0 4px}
 .sent:first-child{border-top:0}
 .sent .ru{font-size:20px;line-height:1.7}
 .sent .tr{color:var(--mute)}
+.pr{font-size:14px;color:var(--acc);font-style:italic}
 .sent .orig{font-size:13px;color:var(--mute);font-style:italic}
 .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .item{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
@@ -97,6 +98,17 @@ dialog menu{display:flex;gap:8px;justify-content:flex-end;padding:0;margin:14px 
 .tile.bad{background:var(--new);color:var(--newi);animation:shake .3s}
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .gstat{display:flex;gap:12px;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.dbt{width:100%;border-collapse:collapse;font-size:15px}
+.dbt th{text-align:left;font-size:12px;color:var(--mute);font-weight:600;padding:10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.dbt td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+.dbt td.ru{font-size:17px;min-width:160px}
+.dbt td.pr{min-width:140px}
+.dbt td.src{font-size:12px;color:var(--mute);max-width:140px;word-break:break-word}
+.dbt td.snd{white-space:nowrap}
+#syncPill{cursor:pointer;font:inherit;font-size:13px}
+#syncPill[data-s=err],#syncPill[data-s=need]{background:var(--new);color:var(--newi)}
+.frow{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.frow .nm{flex:1;word-break:break-all;font-size:14px}
 @media (max-width:600px){main{padding:10px}.game{gap:6px}.tile{padding:8px;font-size:14px}.sent .ru{font-size:18px}.card .front{font-size:22px}}
 </style>
 </head>
@@ -105,11 +117,13 @@ dialog menu{display:flex;gap:8px;justify-content:flex-end;padding:0;margin:14px 
   <div class="top">
     <h1>🇷🇺 Rusça Defterim</h1>
     <div class="pills" id="pills"></div>
+    <button id="syncPill" class="pill" data-act="syncPill" hidden></button>
   </div>
   <nav id="nav">
     <button data-tab="add" class="on">➕ Ekle</button>
     <button data-tab="cards">🃏 Kartlar</button>
     <button data-tab="match">🎯 Eşleştir</button>
+    <button data-tab="db">📚 Veritabanı</button>
     <button data-tab="word">🔤 Kelimeler</button>
     <button data-tab="sentence">💬 Cümleler</button>
     <button data-tab="pattern">🧩 Kalıplar</button>
@@ -127,6 +141,7 @@ dialog menu{display:flex;gap:8px;justify-content:flex-end;padding:0;margin:14px 
       <button data-src="text" class="on">✍️ Metin</button>
       <button data-src="img">🖼️ Fotoğraf / Ekran görüntüsü</button>
       <button data-src="vid">🎬 Video / Altyazı</button>
+      <button data-src="drive">☁️ Google Drive</button>
     </div>
     <div id="src-text" class="src">
       <p class="hint">Duolingo, Instagram vb. yerlerden kopyaladığın metni aşağıya yapıştır. Rusça olmasa da olur — Rusçaya çevrilir ve dinletilir.</p>
@@ -136,6 +151,7 @@ dialog menu{display:flex;gap:8px;justify-content:flex-end;padding:0;margin:14px 
       <p class="hint">Ekran görüntüsünü buraya <b>Ctrl+V</b> ile yapıştırabilirsin. Resimdeki yazı (Rusça/Türkçe/İngilizce) okunup aşağıdaki kutuya eklenir.</p>
       <img id="imgPrev" hidden alt="">
     </div>
+    <div id="src-drive" class="src" hidden><div id="drvBox"></div></div>
     <div id="src-vid" class="src" hidden>
       <div class="row">
         <label class="hint">Video: <input type="file" id="vidIn" accept="video/*"></label>
@@ -231,6 +247,21 @@ dialog menu{display:flex;gap:8px;justify-content:flex-end;padding:0;margin:14px 
   <div id="gameBox"></div>
 </section>
 
+<!-- VERİTABANI -->
+<section id="tab-db">
+  <div class="panel row">
+    <h2 style="margin:0;font-size:18px;flex:1">📚 Veritabanı</h2>
+    <select id="dbType"><option value="all">Hepsi</option><option value="sentence">Cümleler</option><option value="word">Kelimeler</option><option value="pattern">Kalıplar</option><option value="clip">Klipler</option></select>
+    <select id="dbFolder"><option value="">Tüm klasörler</option></select>
+    <input type="text" id="dbQ" placeholder="Ara…" style="max-width:200px">
+    <button data-act="dbCsv">⬇ Excel/CSV</button>
+  </div>
+  <div class="panel" style="overflow-x:auto;padding:0">
+    <table class="dbt"><thead><tr><th>Rusça</th><th>Okunuşu</th><th>Türkçe</th><th>Ses</th><th>Kaynak</th></tr></thead><tbody id="dbBody"></tbody></table>
+  </div>
+  <p class="hint">Okunuş Türkçe harflerle yaklaşık yazımdır (ör. «Привет» → Privet, «есть» → yest). Rusçada vurgusuz «о» çoğunlukla «a» gibi okunur; en doğrusu 🔊 ile dinlemek.</p>
+</section>
+
 <!-- LİSTELER -->
 <section id="tab-list">
   <div class="panel row">
@@ -244,6 +275,20 @@ dialog menu{display:flex;gap:8px;justify-content:flex-end;padding:0;margin:14px 
 
 <!-- AYARLAR -->
 <section id="tab-settings">
+  <div class="panel">
+    <h3 style="margin-top:0">☁️ Google Drive eşitleme</h3>
+    <p class="hint">Kelimeler, cümleler, kalıplar, kart ilerlemen ve klip videoların Drive’ındaki <b>“Rusça Defterim”</b> klasöründe tutulur. Telefonda ve bilgisayarda aynı Google hesabıyla bağlanınca otomatik eşitlenir.</p>
+    <label class="blk">Google istemci kimliği (Client ID)</label>
+    <input type="text" id="sCid" placeholder="123456-abc….apps.googleusercontent.com">
+    <label class="blk">Google hesabın (isteğe bağlı — girişi hızlandırır)</label>
+    <input type="email" id="sGmail" placeholder="ornek@gmail.com">
+    <div class="row" style="margin-top:8px">
+      <button class="primary" data-act="dConnect">Bağlan</button>
+      <button data-act="dSync">↻ Şimdi eşitle</button>
+      <button data-act="dOff">Bağlantıyı kes</button>
+    </div>
+    <p id="driveStatus" class="hint"></p>
+  </div>
   <div class="panel">
     <h3 style="margin-top:0">🔊 Ses</h3>
     <div id="voiceWarn"></div>
@@ -299,6 +344,7 @@ dialog menu{display:flex;gap:8px;justify-content:flex-end;padding:0;margin:14px 
     <span id="wWord"></span>
     <div class="row"><button data-act="wSay">🔊</button><button data-act="wSlow">🐢</button></div>
   </div>
+  <div id="wPr" class="pr"></div>
   <div id="wTr" style="font-size:18px;margin:6px 0"></div>
   <div id="wState" class="hint"></div>
   <div id="wCtx" class="hint" style="margin-top:6px"></div>
@@ -344,7 +390,18 @@ const idbGet=k=>idb('readonly',s=>s.get(k));
 const idbDel=k=>idb('readwrite',s=>s.delete(k));
 const idbClear=()=>idb('readwrite',s=>s.clear());
 const VURL={};
-async function videoURL(id){if(VURL[id])return VURL[id];const b=await idbGet(id);if(!b)return null;return VURL[id]=URL.createObjectURL(b);}
+async function videoURL(id){
+  if(VURL[id])return VURL[id];
+  let b=await idbGet(id);
+  if(!b){ // bu cihazda yoksa Drive'dan indir
+    const c=DB.items.find(i=>i.videoId===id&&i.driveId);
+    if(!c||!window.Drive)return null;
+    if(!Drive.connected()){toast('Bu video Drive’da — önce Drive’a bağlan');return null;}
+    toast('Video Drive’dan indiriliyor…');
+    try{b=await Drive.download(c.driveId);await idbPut(id,b);}catch(e){toast('Video indirilemedi: '+e.message);return null;}
+  }
+  return VURL[id]=URL.createObjectURL(b);
+}
 async function playClip(clip,v){
   const url=await videoURL(clip.videoId);if(!url){toast('Bu klibin videosu bulunamadı');return;}
   if(v.dataset.vid!==clip.videoId){v.src=url;v.dataset.vid=clip.videoId;await new Promise(r=>v.addEventListener('loadedmetadata',r,{once:true}));}
@@ -354,17 +411,45 @@ function bindClipStop(v){v.addEventListener('timeupdate',()=>{if(v._end&&v.curre
 
 /* ---------- Veri ---------- */
 const KEY='rusca-defterim-v1';
-const DEF={items:[],trCache:{},settings:{rate:0.9,voice:'',mode:'auto',mail:'',dir:'ru-tr',autoSpeak:true,cardType:'all',dueOnly:true,inLang:'tr'}};
+const DEF={items:[],trCache:{},deleted:{},imported:{},settings:{rate:0.9,voice:'',mode:'auto',mail:'',dir:'ru-tr',autoSpeak:true,cardType:'all',dueOnly:true,inLang:'tr',drive:false,gClientId:'',gEmail:'',mainFolder:null,autoImport:false}};
 let DB=load(), IDX={};
 function load(){
   try{const d=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(d&&Array.isArray(d.items))return{...DEF,...d,trCache:d.trCache||{},settings:{...DEF.settings,...d.settings}};}catch(e){}
+    if(d&&Array.isArray(d.items))return{...DEF,...d,trCache:d.trCache||{},deleted:d.deleted||{},imported:d.imported||{},settings:{...DEF.settings,...d.settings}};}catch(e){}
   return JSON.parse(JSON.stringify(DEF));
 }
-function save(){
+/* Değişiklik takibi: her kaydın son değişme zamanı (upd) ve silinenler (deleted) — cihazlar arası eşitleme için */
+let SNAP=new Map();
+const snapKey=it=>{const {upd,...r}=it;return JSON.stringify(r);};
+function rebuildSnap(){SNAP=new Map(DB.items.map(i=>[i.id,snapKey(i)]));}
+function track(){
+  let ch=false;const now=Date.now(),seen=new Set();
+  for(const it of DB.items){seen.add(it.id);const k=snapKey(it);if(SNAP.get(it.id)!==k){it.upd=now;SNAP.set(it.id,k);ch=true;}}
+  for(const id of [...SNAP.keys()])if(!seen.has(id)){DB.deleted[id]=now;SNAP.delete(id);ch=true;}
+  return ch;
+}
+function persist(){
   const ks=Object.keys(DB.trCache); if(ks.length>3000)ks.slice(0,ks.length-3000).forEach(k=>delete DB.trCache[k]);
   try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){toast('Kaydedilemedi (depolama dolu olabilir)')}
-  reindex(); updatePills();
+}
+function save(){
+  const ch=track();persist();reindex();updatePills();
+  if(ch&&window.Drive)Drive.schedule();
+}
+for(const it of DB.items)if(!it.upd)it.upd=it.created||1;
+rebuildSnap();
+/* Okunuş: Rusçayı Türkçe harflerle yaz (yaklaşık; vurgusuz o→a gibi kurallar dahil değildir) */
+const TRL={а:'a',б:'b',в:'v',г:'g',д:'d',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'ts',ч:'ç',ш:'ş',щ:'şç',ъ:'',ы:'ı',ь:'',э:'e',ж:'j',ё:'yo',ю:'yu',я:'ya'};
+function pron(t){
+  t=String(t||'').replace(/́/g,'');let out='';
+  for(let i=0;i<t.length;i++){
+    const ch=t[i],lo=ch.toLowerCase(),prev=(t[i-1]||' ').toLowerCase();
+    let r;
+    if(lo==='е')r=(/[\sаеёиоуыэюяъь«"(-]/.test(prev)||i===0)?'ye':'e';
+    else if(lo in TRL)r=TRL[lo];else{out+=ch;continue;}
+    out+=ch!==lo&&r?r[0].toUpperCase()+r.slice(1):r;
+  }
+  return out;
 }
 function reindex(){IDX={};for(const it of DB.items)if(it.type==='word')IDX[norm(it.ru)]=it;}
 function isRu(t){const c=(t.match(/[Ѐ-ӿ]/g)||[]).length,l=(t.match(/[A-Za-zÇĞİÖŞÜçğıöşü]/g)||[]).length;return c>0&&c>=l;}
@@ -427,7 +512,7 @@ async function upsert(f,existing){
   if(f.type==='word')f.ru=f.ru.toLowerCase();
   let it=existing||findDup(f.type,f.ru);
   if(it){Object.assign(it,f);}
-  else{it={id:uid(),type:f.type,ru:f.ru,tr:f.tr||'',note:f.note||'',status:f.status||'learning',created:Date.now(),srs:null};DB.items.push(it);}
+  else{it={id:uid(),type:f.type,ru:f.ru,tr:f.tr||'',note:f.note||'',status:f.status||'learning',created:Date.now(),srs:null,...(f.src?{src:f.src,srcId:f.srcId}:{}),...(f.folder?{folder:f.folder}:{})};DB.items.push(it);}
   save();fillMissing();return it;
 }
 function setWord(w,status,tr,ctx){
@@ -457,6 +542,7 @@ function show(tab){
   if(id==='tab-list'){$('#listQ').value='';renderList();}
   if(tab==='cards')startCards();
   if(tab==='match')matchUI();
+  if(tab==='db')renderDb();
   $$('video').forEach(v=>v.pause());
   if(tab==='settings')renderSettings();
   stopSpeak();
@@ -464,8 +550,9 @@ function show(tab){
 $('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.tab)});
 $('#srcSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   $$('#srcSeg button').forEach(x=>x.classList.toggle('on',x===b));
-  $$('.src').forEach(s=>s.hidden=s.id!=='src-'+b.dataset.src);});
-function refreshView(){if(LISTS.includes(TAB))renderList();}
+  $$('.src').forEach(s=>s.hidden=s.id!=='src-'+b.dataset.src);
+  if(b.dataset.src==='drive')renderDrv();});
+function refreshView(){if(LISTS.includes(TAB))renderList();if(TAB==='db')renderDb();}
 
 function updatePills(){
   const L=DB.items.filter(i=>i.type==='word'&&i.status==='learning').length;
@@ -521,6 +608,7 @@ async function analyze(){
 function renderAna(){
   $('#analysis').innerHTML=CUR.map((o,i)=>`<div class="sent" data-ctx="${esc(o.ru||'')}">
     <div class="ru">${o.ru===null?'<span class="hint">Rusçaya çevriliyor…</span>':rich(o.ru)}</div>
+    ${o.ru?`<div class="pr">${esc(pron(o.ru))}</div>`:''}
     <div class="tr">${o.tr===null?'<span class="hint">çevriliyor…</span>':esc(o.tr)}</div>
     ${o.ru&&o.orig!==o.ru?`<div class="orig">Girdi: ${esc(o.orig)}</div>`:''}
     ${o.note?`<div class="orig">${esc(o.note)}</div>`:''}
@@ -586,8 +674,12 @@ document.addEventListener('paste',e=>{
 
 /* ---------- Video / Altyazı ---------- */
 let CUES=[],CURVID=null;
-$('#vidIn').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const v=$('#vid');v.src=URL.createObjectURL(f);$('#vWrap').hidden=false;
-  CURVID={id:'v_'+f.name+'_'+f.size,name:f.name,file:f,stored:false,rect:null};$('#clipBox').hidden=false;showSel();if(CUES.length)renderCues();});
+function openVideo(blob,name,id,driveId){
+  const v=$('#vid');v.src=URL.createObjectURL(blob);$('#vWrap').hidden=false;
+  CURVID={id,name,file:blob,stored:!!driveId,rect:null,driveId:driveId||null};
+  $('#clipBox').hidden=false;showSel();if(CUES.length)renderCues();
+}
+$('#vidIn').addEventListener('change',e=>{const f=e.target.files[0];if(f)openVideo(f,f.name,'v_'+f.name+'_'+f.size,null);});
 /* Yazı alanı seçimi (oranlar 0–1 olarak saklanır) */
 function showSel(){
   const r=CURVID?.rect,b=$('#selRect');
@@ -612,7 +704,7 @@ async function saveClip(a,z,ru,tr){
   if(!ru&&!tr)return toast('Videoda söyleneni (Rusça) veya anlamını yaz');
   if(!CURVID.stored){try{await idbPut(CURVID.id,CURVID.file);CURVID.stored=true;}catch(e){return toast('Video kaydedilemedi: '+e.message);}}
   if(!ru){try{ru=await translate(tr,'tr','ru')}catch(e){}}
-  DB.items.push({id:uid(),type:'clip',videoId:CURVID.id,video:CURVID.name,a:+a.toFixed(2),z:+z.toFixed(2),mask:CURVID.rect?{...CURVID.rect}:null,ru,tr,note:'',status:'learning',created:Date.now(),srs:null});
+  DB.items.push({id:uid(),type:'clip',videoId:CURVID.id,video:CURVID.name,...(CURVID.driveId?{driveId:CURVID.driveId}:{}),a:+a.toFixed(2),z:+z.toFixed(2),mask:CURVID.rect?{...CURVID.rect}:null,ru,tr,note:'',status:'learning',created:Date.now(),srs:null});
   save();fillMissing();toast('🎬 Klip kaydedildi');
 }
 $('#subIn').addEventListener('change',async e=>{
@@ -680,7 +772,7 @@ function renderList(){
   $('#listBox').innerHTML=(total?`<p class="hint">${total} kayıt${total>400?' (ilk 400 gösteriliyor)':''}</p>`:'<p class="hint">Henüz kayıt yok.</p>')+
   items.map(it=>{const due=it.srs?(it.srs.due<=now?'tekrar vakti':'sonraki tekrar: '+new Date(it.srs.due).toLocaleDateString('tr-TR')):'yeni kart';
    return `<div class="item" data-ctx="${esc(it.type==='word'?'':it.ru)}">
-    <div class="ru">${rich(it.ru)}</div><div class="tr">${esc(it.tr)||'<span class="hint">çeviri bekleniyor…</span>'}</div>
+    <div class="ru">${rich(it.ru)}</div><div class="pr">${esc(pron(it.ru))}</div><div class="tr">${esc(it.tr)||'<span class="hint">çeviri bekleniyor…</span>'}</div>
     ${it.note?`<div class="note">${esc(it.note)}</div>`:''}
     ${it.type==='clip'?`<div class="hint">🎬 ${esc(it.video||'')} · ${fmt(it.a)}–${fmt(it.z)}</div>`:''}
     <div class="acts">${it.type==='clip'?`<button class="sm" data-act="iPlay" data-id="${it.id}">▶ İzle</button>`:''}<button class="sm" data-act="iSay" data-id="${it.id}">🔊</button><button class="sm" data-act="iSlow" data-id="${it.id}">🐢</button>
@@ -704,7 +796,7 @@ async function editItem(it){const f=await openEdit(it,TYPE_TR[it.type]+' düzenl
 let WC=null;
 function openWord(w,ctx){
   WC={w,ctx,tr:''};const it=IDX[norm(w)];
-  $('#wWord').textContent=w;$('#wTr').textContent=it?.tr||'çevriliyor…';
+  $('#wWord').textContent=w;$('#wPr').textContent=pron(w);$('#wTr').textContent=it?.tr||'çevriliyor…';
   $('#wState').textContent=it?(it.status==='known'?'✅ Biliyorsun':'📘 Öğreniyorsun'):'🆕 Yeni kelime';
   $('#wCtx').textContent=ctx&&ctx!==w?'Cümle: '+ctx:'';
   $('#wDict').href='https://en.wiktionary.org/wiki/'+encodeURIComponent(w.toLowerCase())+'#Russian';
@@ -744,7 +836,8 @@ function renderCard(){
   if(!FC.dir)FC.dir=DB.settings.dir==='mix'?['ru-tr','tr-ru','audio'][Math.floor(Math.random()*3)]:DB.settings.dir;
   const d=FC.dir,ruH=`<div data-ctx="${esc(it.type==='word'?'':it.ru)}">${rich(it.ru)}</div>`,trH=esc(it.tr||'(çeviri yok)');
   const front=d==='ru-tr'?ruH:d==='tr-ru'?trH:`<div><button class="big" data-act="cSay">🔊</button></div><div class="hint">Dinle ve anlamını düşün</div>`;
-  const back=d==='ru-tr'?trH:d==='tr-ru'?ruH:ruH+`<div class="hint" style="font-size:18px">${trH}</div>`;
+  const prH=`<div class="pr">${esc(pron(it.ru))}</div>`;
+  const back=(d==='ru-tr'?prH+trH:d==='tr-ru'?ruH+prH:ruH+prH+`<div class="hint" style="font-size:18px">${trH}</div>`);
   const pv=[0,1,2,3].map(g=>ivl(nextSrs(it,g)));
   box.innerHTML=`<div class="card">
     <div class="badge">${TYPE_TR[it.type]} · kalan ${FC.q.length}</div>
@@ -778,7 +871,8 @@ function fillVoices(){
   s.innerHTML=ruVoices.length?ruVoices.map(v=>`<option ${v.name===DB.settings.voice?'selected':''}>${esc(v.name)}</option>`).join(''):'<option>(Rusça ses yok)</option>';
   $('#voiceWarn').innerHTML=ruVoices.length?'':`<p class="warn">Bu tarayıcıda/bilgisayarda Rusça ses bulunamadı, bu yüzden <b>çevrimiçi ses</b> kullanılıyor. Çevrimdışı ses için: <b>Windows Ayarlar → Saat ve dil → Konuşma → Ses ekle → Русский</b>. Ya da uygulamayı <b>Microsoft Edge</b>'de aç (doğal Rusça sesler hazır gelir).</p>`;
 }
-function renderSettings(){const s=DB.settings;$('#sMode').value=s.mode;$('#sRate').value=s.rate;$('#sRateV').textContent=s.rate+'x';$('#sMail').value=s.mail;fillVoices();}
+function renderSettings(){const s=DB.settings;$('#sCid').value=s.gClientId||(window.Drive?Drive.clientId():'');$('#sGmail').value=s.gEmail||'';
+  if(window.Drive)$('#driveStatus').textContent=Drive.msg()||(s.drive?'':'Bağlı değil');$('#sMode').value=s.mode;$('#sRate').value=s.rate;$('#sRateV').textContent=s.rate+'x';$('#sMail').value=s.mail;fillVoices();}
 $('#sMode').addEventListener('change',e=>{DB.settings.mode=e.target.value;save();});
 $('#sVoice').addEventListener('change',e=>{DB.settings.voice=e.target.value;save();});
 $('#sRate').addEventListener('input',e=>{DB.settings.rate=+e.target.value;$('#sRateV').textContent=e.target.value+'x';save();});
@@ -870,6 +964,126 @@ bindClipStop($('#pVid'));
 $('#pHide').addEventListener('change',e=>$('#pWrap').classList.toggle('hide',e.target.checked));
 $('#vdlg').addEventListener('close',()=>$('#pVid').pause());
 
+/* ---------- Google Drive kaynak klasörleri ---------- */
+/* Ana klasör (ör. "Learning Russing") seçilir; alt klasörleri (Audio, Photo, Sentence, Video) programda aynen görünür.
+   Orijinal dosyalar her zaman Drive'da kalır: program sadece okur, taşımaz/silmez. */
+let FB=null,IMPORTING=false;
+const DRV={subs:null,cur:null,files:{},scanned:false};
+const mb=s=>s?(s/1048576).toFixed(1)+' MB':'';
+const ICON={img:'🖼️',vid:'🎬',doc:'📄',aud:'🎧',other:'📎'};
+const kindOf=f=>f.mimeType.startsWith('image/')?'img':f.mimeType.startsWith('video/')?'vid':f.mimeType.startsWith('audio/')?'aud'
+  :(f.mimeType==='application/vnd.google-apps.document'||/^text\//.test(f.mimeType)||/\.(txt|srt|vtt|md|csv)$/i.test(f.name))?'doc':'other';
+const importable=f=>['img','doc'].includes(kindOf(f));
+const dErr=e=>toast(e.message==='NOAUTH'?'Drive oturumunun süresi doldu, tekrar bağlan':e.message);
+async function loadFolders(){try{FB.folders=await Drive.subfolders(FB.path[FB.path.length-1].id);}catch(e){FB.folders=[];dErr(e);}renderDrv();}
+async function scanMain(){
+  const m=DB.settings.mainFolder;if(!m)return;
+  try{
+    DRV.subs=[{id:m.id,name:m.name,top:true},...(await Drive.subfolders(m.id))];
+    await Promise.all(DRV.subs.map(async s=>{DRV.files[s.id]=await Drive.filesIn(s.id);}));
+    DRV.scanned=true;
+  }catch(e){dErr(e);DRV.subs=DRV.subs||[];}
+  renderDrv();
+}
+const newIn=id=>(DRV.files[id]||[]).filter(f=>importable(f)&&!DB.imported[f.id]);
+function folderName(id){const s=(DRV.subs||[]).find(x=>x.id===id);return s?(s.top?s.name:s.name):'';}
+function fileRow(f,folderId){
+  const k=kindOf(f),imp=DB.imported[f.id],dis=IMPORTING?'disabled':'';
+  const btn=importable(f)?`<button class="sm" data-act="drvImportOne" data-id="${f.id}" data-folder="${folderId||''}" ${dis}>${imp?'Tekrar aktar':'Aktar'}</button>`
+    :k==='vid'?`<button class="sm" data-act="drvVideo" data-id="${f.id}">🎬 Aç</button>`
+    :k==='aud'?`<button class="sm" data-act="drvAudio" data-id="${f.id}">▶ Dinle</button>`:'';
+  return `<div class="frow"><span>${ICON[k]}</span><span class="nm">${esc(f.name)} <span class="hint">${mb(+f.size)}${imp?` · ✓ aktarıldı (${imp.n} kayıt)`:''}</span></span>
+    <a href="https://drive.google.com/file/d/${encodeURIComponent(f.id)}/view" target="_blank" rel="noopener" title="Drive’da aç" class="hint">↗</a>${btn}</div>`;
+}
+function renderDrv(){
+  const box=$('#drvBox');if(!box)return;
+  if(!window.Drive||!Drive.clientId()){box.innerHTML=`<p class="hint">Google Drive bağlantısı henüz kurulmadı. <b>Ayarlar → Google Drive eşitleme</b> bölümüne istemci kimliğini (Client ID) girip “Bağlan”a bas.</p><button data-act="goSettings">⚙️ Ayarlar’a git</button>`;return;}
+  if(!Drive.connected()){box.innerHTML=`<p class="hint">Drive’daki <b>Learning Russing</b> klasöründen görsel, metin, ses ve videoları almak için bağlan.</p><button class="primary" data-act="dConnect2">☁️ Google Drive’a bağlan</button>`;return;}
+  const link=`<div class="sub"><b>🔗 Drive linkinden içe al</b>
+    <div class="row" style="margin-top:6px;flex-wrap:nowrap"><input type="text" id="drvLink" placeholder="https://drive.google.com/file/d/… veya …/folders/…"><button data-act="drvLink">İçe al</button></div>
+    <p class="hint" style="margin:4px 0 0">Drive’da dosyaya/klasöre sağ tık → Paylaş → Bağlantıyı kopyala. Dosya Drive’da kalır, program sadece okur.</p></div>`;
+  if(FB){
+    box.innerHTML=`<div class="row" style="margin-bottom:6px">${FB.path.map((p,i)=>`<button class="sm" data-act="drvUp" data-i="${i}">${esc(p.name)}</button>`).join(' › ')}</div>
+      ${FB.folders===null?'<p class="hint">Klasörler yükleniyor…</p>':FB.folders.length?FB.folders.map(f=>`<div class="frow"><span>📁</span><span class="nm">${esc(f.name)}</span><button class="sm" data-act="drvInto" data-id="${f.id}" data-name="${esc(f.name)}">Aç ›</button></div>`).join(''):'<p class="hint">Bu klasörde alt klasör yok.</p>'}
+      <div class="row" style="margin-top:10px"><button class="primary" data-act="drvPick" ${FB.path.length<2?'disabled':''}>✓ “${esc(FB.path[FB.path.length-1].name)}” ana klasörüm olsun</button><button data-act="drvCancel">Vazgeç</button></div>`;
+    return;
+  }
+  const m=DB.settings.mainFolder;
+  if(!m){box.innerHTML=`<p class="hint">Önce ana öğrenme klasörünü seç (ör. <b>Learning Russing</b>). İçindeki alt klasörler (Audio, Photo, Sentence, Video) programda aynı yapıyla görünür; her gün eklediğin yeni dosyaları buradan aktarırsın.</p>
+    <button class="primary" data-act="drvRoot">📁 Ana klasörü seç</button>${link}`;return;}
+  if(!DRV.subs){box.innerHTML=`<p class="hint">📁 ${esc(m.name)} taranıyor…</p>`;scanMain();return;}
+  const totalNew=DRV.subs.reduce((s,x)=>s+newIn(x.id).length,0);
+  let h=`<div class="row" style="justify-content:space-between"><b>📁 ${esc(m.name)}</b>
+     <span class="row"><button class="sm" data-act="drvRescan">↻ Yenile</button><button class="sm" data-act="drvRoot">Değiştir</button></span></div>
+   <div class="row" style="margin:8px 0">
+     ${totalNew?`<button class="primary" data-act="drvImportAll" ${IMPORTING?'disabled':''}>⬇ ${totalNew} yeni dosyayı veritabanına aktar</button>`:'<span class="hint">✓ Aktarılmamış yeni görsel/metin yok</span>'}
+     <label class="hint"><input type="checkbox" id="drvAuto" ${DB.settings.autoImport?'checked':''}> Uygulama açılınca yenileri otomatik aktar</label>
+   </div><div id="drvProg" class="hint"></div>
+   <div class="seg">${DRV.subs.filter(s=>!s.top||(DRV.files[s.id]||[]).length).map(s=>{const n=newIn(s.id).length,c=(DRV.files[s.id]||[]).length;
+     return `<button data-act="drvSub" data-id="${s.id}" class="${DRV.cur===s.id?'on':''}">${s.top?'(ana klasör)':esc(s.name)} <span class="hint">${c}${n?` · ${n} yeni`:''}</span></button>`;}).join('')}</div>`;
+  if(DRV.cur){const fs=DRV.files[DRV.cur]||[];
+    h+=fs.length?fs.map(f=>fileRow(f,DRV.cur)).join(''):'<p class="hint">Bu klasör boş.</p>';
+    if(!fs.length||fs.some(f=>kindOf(f)==='aud'))h+='<p class="hint">🎧 Ses dosyalarını buradan dinleyebilirsin; sesten yazıya otomatik çeviri şimdilik yok.</p>';}
+  else h+='<p class="hint">Dosyalarını görmek için bir klasöre dokun.</p>';
+  box.innerHTML=h+link;
+  $('#drvAuto')?.addEventListener('change',e=>{DB.settings.autoImport=e.target.checked;persist();});
+}
+/* Metni çözümle → Rusça cümleler + çevirileri → veritabanına ekle */
+async function importText(text,name,srcId,folder){
+  const units=buildUnits(text,false).filter(u=>u.ru&&/\p{L}{2,}/u.test(u.ru));
+  let n=0;
+  for(const u of units){
+    if(!u.tr){try{u.tr=await translate(u.ru,'ru','tr')}catch(e){u.tr=''}}
+    const one=(u.ru.match(WRE)||[]).length===1&&!/[.!?]/.test(u.ru);
+    await upsert({type:one?'word':'sentence',ru:one?u.ru.replace(/[^\p{L}́-]/gu,''):u.ru,tr:u.tr,note:u.note||'',src:name,srcId,folder:folder||''});n++;
+  }
+  if(srcId)DB.imported[srcId]={at:Date.now(),n,name};
+  save();return n;
+}
+const importImageBlob=async(blob,name,srcId,folder)=>importText(await ocr(blob),name,srcId,folder);
+async function importFile(f,folder){
+  return kindOf(f)==='img'?importImageBlob(await Drive.download(f.id),f.name,f.id,folder):importText(await Drive.readText(f),f.name,f.id,folder);
+}
+async function importBatch(list){
+  if(IMPORTING)return 0;
+  list=list||DRV.subs.flatMap(s=>newIn(s.id).map(f=>({f,folder:s.top?'':s.name})));if(!list.length)return 0;
+  IMPORTING=true;renderDrv();let total=0;
+  for(let i=0;i<list.length;i++){
+    const {f,folder}=list[i],p=$('#drvProg');if(p)p.textContent=`(${i+1}/${list.length}) ${folder?folder+' / ':''}${f.name} okunuyor…`;
+    try{total+=await importFile(f,folder);}catch(e){toast(f.name+': '+e.message);}
+  }
+  IMPORTING=false;renderDrv();toast(`${list.length} dosyadan ${total} kayıt veritabanına eklendi`);
+  const p=$('#drvProg');if(p)p.innerHTML=`✓ ${list.length} dosyadan ${total} kayıt eklendi. <button class="sm" data-act="goDb">📚 Veritabanında gör</button>`;
+  return total;
+}
+async function autoImport(){
+  if(!DB.settings.autoImport||!DB.settings.mainFolder||!window.Drive||!Drive.connected())return;
+  await scanMain();const n=await importBatch();if(n)toast(`Drive’dan ${n} yeni kayıt otomatik aktarıldı`);
+}
+const findDrvFile=id=>Object.values(DRV.files).flat().find(f=>f.id===id);
+function driveIdFromLink(s){s=s.trim();const m=s.match(/\/folders\/([\w-]{10,})/)||s.match(/\/d\/([\w-]{10,})/)||s.match(/[?&]id=([\w-]{10,})/);return m?m[1]:(/^[\w-]{20,}$/.test(s)?s:null);}
+
+/* ---------- Veritabanı görünümü ---------- */
+function dbRows(){
+  const t=$('#dbType').value,q=norm($('#dbQ').value),fo=$('#dbFolder').value;
+  return DB.items.filter(i=>(t==='all'||i.type===t)&&(!fo||(fo==='-'?!i.folder:i.folder===fo))&&(!q||norm(i.ru+' '+i.tr+' '+pron(i.ru)+' '+(i.src||'')).includes(q)))
+    .sort((a,b)=>(b.created||0)-(a.created||0));
+}
+function renderDb(){
+  const sel=$('#dbFolder'),cur=sel.value,fs=[...new Set(DB.items.map(i=>i.folder).filter(Boolean))].sort();
+  sel.innerHTML='<option value="">Tüm klasörler</option>'+fs.map(f=>`<option ${f===cur?'selected':''}>${esc(f)}</option>`).join('')+'<option value="-">Elle eklenenler</option>';
+  if(cur==='-')sel.value='-';
+  const rows=dbRows();
+  $('#dbBody').innerHTML=rows.length?rows.slice(0,500).map(i=>`<tr>
+    <td class="ru" data-ctx="${esc(i.type==='word'?'':i.ru)}">${rich(i.ru)}</td>
+    <td class="pr">${esc(pron(i.ru))}</td>
+    <td>${esc(i.tr)||'<span class="hint">çevriliyor…</span>'}</td>
+    <td class="snd"><button class="sm" data-act="dbSay" data-id="${i.id}">🔊</button> <button class="sm" data-act="dbSlow" data-id="${i.id}">🐢</button>${i.type==='clip'?` <button class="sm" data-act="iPlay" data-id="${i.id}">▶</button>`:''}</td>
+    <td class="src">${i.folder?`📁 ${esc(i.folder)}<br>`:''}${i.srcId?`<a href="https://drive.google.com/file/d/${encodeURIComponent(i.srcId)}/view" target="_blank" rel="noopener">${esc(i.src)}</a>`:esc(i.src||i.video||TYPE_TR[i.type])}</td></tr>`).join('')
+    :'<tr><td colspan="5" class="hint" style="padding:20px">Kayıt yok. Ekle → ☁️ Google Drive bölümünden klasörünü aktar ya da metin/görsel ekle.</td></tr>';
+}
+$('#dbType').addEventListener('change',renderDb);$('#dbFolder').addEventListener('change',renderDb);$('#dbQ').addEventListener('input',renderDb);
+
 /* ---------- Tıklama eylemleri ---------- */
 let LASTSEL={t:'',at:0};
 document.addEventListener('selectionchange',()=>{const t=String(getSelection()).trim();if(t)LASTSEL={t,at:Date.now()};});
@@ -929,7 +1143,8 @@ const ACT={
   iKnown(b){byId(b.dataset.id).status='known';save();renderList();},
   iLearn(b){byId(b.dataset.id).status='learning';save();renderList();fillMissing();},
   iDel(b){const it=byId(b.dataset.id);if(confirm('Silinsin mi?\n'+it.ru)){DB.items=DB.items.filter(i=>i!==it);save();renderList();
-    if(it.type==='clip'&&!DB.items.some(i=>i.videoId===it.videoId)){idbDel(it.videoId).catch(()=>{});if(VURL[it.videoId]){URL.revokeObjectURL(VURL[it.videoId]);delete VURL[it.videoId];}if(CURVID?.id===it.videoId)CURVID.stored=false;}}},
+    if(it.type==='clip'&&!DB.items.some(i=>i.videoId===it.videoId)){idbDel(it.videoId).catch(()=>{});
+      if(it.driveOwned&&it.driveId&&window.Drive&&Drive.connected())Drive.trash(it.driveId).catch(()=>{});if(VURL[it.videoId]){URL.revokeObjectURL(VURL[it.videoId]);delete VURL[it.videoId];}if(CURVID?.id===it.videoId)CURVID.stored=false;}}},
   // düzenleme
   fSay:()=>speak($('#fRu').value),
   async fRu2Tr(){const v=$('#fRu').value.trim();if(v)try{$('#fTr').value=await translate(v,'ru','tr')}catch(e){toast(e.message)}},
@@ -947,7 +1162,48 @@ const ACT={
   export(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,1)],{type:'application/json'}));
     a.download='rusca-defterim-yedek-'+new Date().toISOString().slice(0,10)+'.json';a.click();},
   importClick:()=>$('#impIn').click(),
-  wipe(){if(confirm('Tüm kelimeler, cümleler, kalıplar ve ilerleme silinecek. Emin misin?')){DB=JSON.parse(JSON.stringify(DEF));save();idbClear().catch(()=>{});if(CURVID)CURVID.stored=false;toast('Silindi');}},
+  wipe(){if(confirm('Bu cihazdaki tüm kelimeler, cümleler, kalıplar, videolar ve ilerleme silinecek (Google Drive’daki kopya silinmez ve Drive bağlantısı kapatılır). Emin misin?')){
+    if(window.Drive)Drive.logout();DB=JSON.parse(JSON.stringify(DEF));rebuildSnap();persist();reindex();updatePills();idbClear().catch(()=>{});if(CURVID)CURVID.stored=false;toast('Silindi');}},
+  // drive
+  goSettings:()=>show('settings'),goDb:()=>show('db'),
+  dConnect2:()=>Drive.login(),
+  syncPill(){const s=Drive.status();if(s==='need')Drive.login();else if(s==='err'){show('settings');}else Drive.sync();},
+  dConnect(){DB.settings.gClientId=$('#sCid').value.trim();DB.settings.gEmail=$('#sGmail').value.trim();persist();Drive.login();},
+  dSync(){if(!DB.settings.drive)return toast('Önce “Bağlan”a bas');Drive.sync();},
+  dOff(){if(confirm('Drive bağlantısı kesilsin mi? (Drive’daki veriler silinmez)')){Drive.logout();renderDrv();}},
+  drvRoot(){FB={path:[{id:'root',name:'Drive’ım'}],folders:null};renderDrv();loadFolders();},
+  drvInto(b){FB.path.push({id:b.dataset.id,name:b.dataset.name});FB.folders=null;renderDrv();loadFolders();},
+  drvUp(b){FB.path=FB.path.slice(0,+b.dataset.i+1);FB.folders=null;renderDrv();loadFolders();},
+  drvPick(){const c=FB.path[FB.path.length-1];if(c.id==='root')return toast('Bir klasör seç');
+    DB.settings.mainFolder={id:c.id,name:c.name};persist();FB=null;Object.assign(DRV,{subs:null,cur:null,files:{}});renderDrv();},
+  drvCancel(){FB=null;renderDrv();},
+  drvRescan(){DRV.subs=null;renderDrv();},
+  drvSub(b){DRV.cur=b.dataset.id;renderDrv();},
+  drvImportAll:()=>importBatch(),
+  drvImportOne(b){const f=findDrvFile(b.dataset.id);if(f)importBatch([{f,folder:folderName(b.dataset.folder)}]);},
+  async drvLink(){
+    const id=driveIdFromLink($('#drvLink').value);if(!id)return toast('Geçerli bir Google Drive linki yapıştır');
+    let f;try{f=await Drive.meta(id);}catch(e){return dErr(e);}
+    if(f.mimeType==='application/vnd.google-apps.folder'){
+      DRV.files[f.id]=await Drive.filesIn(f.id).catch(e=>{dErr(e);return[];});
+      if(!(DRV.subs||[]).some(s=>s.id===f.id))(DRV.subs=DRV.subs||[]).push({id:f.id,name:'🔗 '+f.name});
+      DRV.cur=f.id;renderDrv();return;}
+    DRV.files['link']=[f,...(DRV.files['link']||[]).filter(x=>x.id!==f.id)];
+    const k=kindOf(f);
+    if(importable(f)){const n=await importBatch([{f,folder:'Link'}]);$('#drvLink').value='';}
+    else if(k==='vid')ACT.drvVideo({dataset:{id:f.id}});
+    else if(k==='aud')ACT.drvAudio({dataset:{id:f.id}});
+    else toast('Bu dosya türü desteklenmiyor: '+f.mimeType);},
+  async drvAudio(b){const f=findDrvFile(b.dataset.id);if(!f)return;toast('Ses indiriliyor…');
+    try{const a=new Audio(URL.createObjectURL(await Drive.download(f.id)));a.play();}catch(e){dErr(e);}},
+  async drvVideo(b){const f=findDrvFile(b.dataset.id);const id='d_'+f.id;
+    let blob=await idbGet(id);
+    if(!blob){setOcr('Video Drive’dan indiriliyor ('+mb(f.size)+')…');try{blob=await Drive.download(f.id);await idbPut(id,blob);}catch(e){setOcr('');return toast('İndirilemedi: '+e.message);}setOcr('');}
+    openVideo(blob,f.name,id,f.id);$('#srcSeg [data-src=vid]').click();toast('Video açıldı — yazı alanını seçip klip oluşturabilirsin');},
+  dbSay:b=>speak(byId(b.dataset.id).ru),dbSlow:b=>speak(byId(b.dataset.id).ru,0.6),
+  dbCsv(){const rows=[['Tür','Rusça','Okunuşu','Türkçe','Not','Klasör','Kaynak']].concat(dbRows().map(i=>[TYPE_TR[i.type],i.ru,pron(i.ru),i.tr,i.note||'',i.folder||'',i.src||i.video||'']));
+    const csv='﻿'+rows.map(r=>r.map(c=>'"'+String(c??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='rusca-veritabani.csv';a.click();},
 };
 document.addEventListener('click',e=>{
   const w=e.target.closest('.w[data-w]');
@@ -960,5 +1216,7 @@ if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWo
 bindClipStop($('#vid'));mInit();
 reindex();updatePills();fillMissing();
 </script>
+<script src="drive.js"></script>
+<script>Drive.init();setTimeout(autoImport,2000);</script>
 </body>
 </html>
